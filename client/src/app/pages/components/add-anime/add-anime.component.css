@@ -1,0 +1,58 @@
+* {
+    font-family: Asap, sans-serif;
+}
+
+h4 {
+    text-align: center;
+}
+.required {
+    color: red;
+}
+
+.kitsu-add-anime-form-wrapper {
+    display: flex;
+    justify-content: center;
+}
+    .kitsu-add-anime-form-wrapper form {
+        min-width: 25%;
+    }
+
+        .kitsu-add-anime-form-wrapper form *:not(button) {
+            width: 100%;
+        }
+
+.kitsu-response-g {
+    width: 20%;
+    margin: 0 auto;
+    padding: 5px;
+    border: 1px solid green;
+    color: green;
+    background-color: greenyellow;
+    border-radius: 0.25rem;
+}
+
+.kitsu-response-b {
+    width: 20%;
+    margin: 0 auto;
+    padding: 5px;
+    border: 1px solid red;
+    color: red;
+    background-color: pink;
+    border-radius: 0.25rem;
+}
+
+input {
+    height: 20px;
+}
+
+input, textarea {
+    margin-top: 5px;
+}
+
+form div :last-child {
+    margin-bottom: 15px;
+}
+
+#image {
+    padding-bottom: 5px;
+}

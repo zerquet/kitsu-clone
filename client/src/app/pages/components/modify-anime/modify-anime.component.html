@@ -1,0 +1,56 @@
+<div id="main"></div>
+<h4>This is meant for admin use only. Modify an existing anime by filling out this form</h4>
+<div class="selector-wrapper">
+    <div>
+        <label for="anime-selector">Select an anime</label><br />
+        <select id="anime-selector">
+            <option (click)="onAnimeClicked(anime)" *ngFor="let anime of animes$.getValue()" [value]="anime.id">{{anime.title}}</option>
+        </select>
+    </div>
+</div>
+<div class="form-wrapper">
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+    
+        <div>
+            <label for="title">Title </label><br />
+            <input id="title" type="text" formControlName="title"><br />
+            <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required">
+                <div *ngIf="title?.hasError('required')">
+                    Title is required.
+                </div>
+            </div>
+        </div>
+    
+        <div>
+            <label for="description">Description </label><br />
+            <textarea id="description" formControlName="description" rows="6"></textarea>
+        </div>
+    
+        <div>
+            <label for="image">Image </label><br />
+            <input id="image" type="file" formControlName="image" (change)="onImagePicked($event)">
+        </div>
+
+        <div>
+            <label for="status">Status </label>
+            <button type="button" (click)="clearStatus()">Clear</button>
+            <br />
+            <select id="status" formControlName="status" multiple>
+                <option value="trending this week">Trending this week</option>
+                <option value="top airing anime">Top Airing Anime</option>
+                <option value="top upcoming anime">Top Upcoming Anime</option>
+                <option value="highest rated anime">Highest Rated Anime</option>
+                <option value="most popular">Most Popular</option>
+            </select>
+        </div>
+    
+        <div>
+            <p>Save your changes</p>
+            <button type="submit" [disabled]="!updateForm.valid">Submit</button>
+        </div>
+    
+    </form>
+</div>
+<div [ngClass]="response == 'good' ? 'response-g' : ''" [ngClass]="response == 'bad' ? 'response-b' : ''">
+    {{responseMsg}}
+</div>

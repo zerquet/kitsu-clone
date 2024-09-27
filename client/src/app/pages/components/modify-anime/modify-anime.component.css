@@ -1,0 +1,67 @@
+* {
+    font-family: Asap, sans-serif;
+}
+
+h4 {
+    text-align: center;
+}
+.required {
+    color: red;
+}
+
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+}
+    .form-wrapper form {
+        min-width: 25%;
+    }
+
+        .form-wrapper form *:not(button) {
+            width: 100%;
+        }
+
+.selector-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+    .selector-wrapper div {
+        min-width: 25%;
+    }
+
+.response-g {
+    width: 20%;
+    margin: 0 auto;
+    padding: 5px;
+    border: 1px solid green;
+    color: green;
+    background-color: greenyellow;
+    border-radius: 0.25rem;
+}
+
+.response-b {
+    width: 20%;
+    margin: 0 auto;
+    padding: 5px;
+    border: 1px solid red;
+    color: red;
+    background-color: pink;
+    border-radius: 0.25rem;
+}
+
+input {
+    height: 20px;
+}
+
+input, textarea {
+    margin-top: 5px;
+}
+
+form div :last-child {
+    margin-bottom: 15px;
+}
+
+#image {
+    padding-bottom: 5px;
+}
