@@ -18,11 +18,17 @@ namespace server.Controllers
             _animeService = animeService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id) {
+            
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var results = await _animeService.GetAll();
-            var model = results.Select(record => AnimeMapper.ToAnimeDto(record, null)).ToList();
+            var model = results.Select(record => AnimeMapper.ToAnimeDto(record, FileServerService.GetAnimeImage(record.ImageUrl!))).ToList();
             return Ok(model);
         }
 

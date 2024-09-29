@@ -4,14 +4,14 @@ namespace server.Services
 {
     public static class FileServerService
     {
-        public static byte[] GetAnimeImage(string id)
+        public static string GetAnimeImage(string id)
         {
             var filePath = @"\\S1DEREA1N1NE\shared\" + id + ".jpg";
             using var client = new WebClient();
 
             client.Credentials = new NetworkCredential("icase", "lingering");
 
-            return client.DownloadData(filePath);
+            return Convert.ToBase64String(client.DownloadData(filePath));
 
         }
 

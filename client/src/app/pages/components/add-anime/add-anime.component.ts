@@ -13,7 +13,8 @@ export class AddAnimeComponent {
     title: new FormControl('', Validators.required),
     description: new FormControl(),
     image: new FormControl(),
-    status: new FormControl()
+    status: new FormControl(),
+    genres: new FormControl()
   }); //need to style template and hookup service, then add library UI?
   response: string = "";
   responseMsg: string = "";
@@ -29,6 +30,9 @@ export class AddAnimeComponent {
     formData.append('image', this.image?.value);
     for(let i = 0; i < this.status?.value.length; i++) {
       formData.append('status', this.status?.value[i]);
+    }
+    for(let i = 0; i < this.genres?.value.length; i++) {
+      formData.append('genres', this.genres?.value[i])
     }
     //ASP.NET Core (or any api that supports it) will read multiple assignments to the 'status' variable as an array of values, which is the expected data type. 
     //Ref: https://stackoverflow.com/a/9547490/20829897 & https://stackoverflow.com/a/28434829/20829897
@@ -55,6 +59,9 @@ export class AddAnimeComponent {
   clearStatus() {
     this.status?.reset();
   }
+  clearGenres() {
+    this.genres?.reset();
+  }
 
   //getters so we can use in form control in template
   get title() {
@@ -73,4 +80,7 @@ export class AddAnimeComponent {
     return this.addForm.get('status');
   }
 
+  get genres() {
+    return this.addForm.get('genres');
+  }
 }

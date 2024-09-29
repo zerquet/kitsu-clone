@@ -4,9 +4,6 @@
     margin-left: auto;
     margin-right: auto;
 }
-    h2 {
-        color: #464646;
-    }
 
     .kitsu-search-wrap {
         display: flex;
@@ -15,7 +12,7 @@
     }
 
         .kitsu-search-icon-wrap {
-            background-color: #fff;
+            background-color: var(--dropdown);
             padding-top: 13px;
             padding-right: 13px;
             padding-left: 13px;
@@ -37,18 +34,14 @@
     .kitsu-below-search {
         margin-top: 20px;
         margin-bottom: 40px;
-        color:#464646
     }
         .kitsu-below-search a {
             text-decoration: none;
-            color: #fc7500;
+            color: var(--small-link);
         }
         .kitsu-below-search a:hover {
-            color: #e26900;
+            color: var(--small-link-hover);
         }
-    .kitsu-explore-wrap {
-        color: #464646;
-    }
         
         .kitsu-poster-list {
             display: flex;
@@ -75,16 +68,15 @@
     position: relative;
     width: 25%;
     top: 40px;
-    background-color: #fff;
+    background-color: var(--dropdown);
     padding: 20px;
-    color: #464646;
     border-radius: 5px;
 }
     #categories h5 {
         margin-top: 5px;
         margin-bottom: 5px;
         padding-bottom: 15px;
-        border-bottom: #e5e5e5 solid 1px;
+        border-bottom: var(--dropdown-border) solid 1px;
     }
 
 #favorite-categories {

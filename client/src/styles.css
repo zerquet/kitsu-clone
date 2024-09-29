@@ -1,4 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --body-main: #464646;
+    --nav-menu: #402F3F;
+    --nav-dark: #332532;
+    --nav-dark-focus: #241a24;
+    --dropdown: #fff;
+    --dropdown-hover: #faf9fa;
+    --dropdown-shadow: rgba(0,0,0,0.2);
+    --dropdown-border: #e5e5e5;
+    --dropdown-border-2: #eaeaea;
+    --nav-item-hover: RGBA(237, 240, 241, 1);
+    --small-link: #fc7500;
+    --small-link-hover: #e26900;
+    --tab-bg: #f7f7f7;
+    --tab-bg-hover: #f2f2f2;
+}
 html {
     font-family: Asap, sans-serif;
     background-color: #f7f7f7;
@@ -10,4 +26,5 @@ html {
 
 body {
     margin: 0;
+    color: var(--body-main)
 }

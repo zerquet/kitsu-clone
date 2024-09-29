@@ -3,7 +3,7 @@
     top: 0px;
     left: 0px;
     width: 100%;
-    background-color: #402F3F;
+    background-color: var(--nav-menu);
     color: #999;
 }
 
@@ -34,11 +34,11 @@
                 .kitsu-browse-dropdown {
                     display: none;
                     position: absolute;
-                    background-color: #fff;
+                    background-color: var(--dropdown);
                     color: #464646;
                     border-radius: .25rem;
                     min-width: 150px;
-                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                    box-shadow: 0px 8px 16px 0px var(--dropdown-shadow);
                     margin-top: 15px;
                     z-index: 1;
                 }
@@ -50,7 +50,7 @@
                         margin: 0px;
                     }
                     .kitsu-browse-dropdown p:hover {
-                        background-color: #faf9fa;
+                        background-color: var(--dropdown-hover);
                     }
                     .kitsu-browse-dropdown-show {
                         display: block;
@@ -61,30 +61,30 @@
                     position: absolute;
                     transform: translateX(-8rem);
                     font-size: smaller;
-                    background-color: #fff;
+                    background-color: var(--dropdown);
                     color: #464646;
                     border-radius: .25rem;
                     min-width: 150px;
-                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                    box-shadow: 0px 8px 16px 0px var(--dropdown-shadow);
                     margin-top: 15px;
                     z-index: 1;
                 }
                     .kitsu-account-dropdown p {
-                        border-bottom: 1px #e5e5e5 solid; 
+                        border-bottom: 1px var(--dropdown-border) solid; 
                         padding-top: 8px;
                         padding-bottom: 8px;
                         padding-left: 12%;
                         margin: 0px;
                     }
                     .kitsu-account-dropdown p:hover {
-                        background-color: #faf9fa;
+                        background-color: var(--dropdown-hover);
                     }
                     .kitsu-account-dropdown-show {
                         display: block;
                     }
         
             .kitsu-navbar-item:hover {
-                color: RGBA(237, 240, 241, 1);
+                color: var(--nav-item-hover);
             }
         
             .kitsu-navbar-item span {
@@ -94,23 +94,23 @@
 
             .kitsu-search {
                 height: 100%;;
-                background-color: #332532;
+                background-color: var(--nav-dark);
                 color: white;
                 border: none;
                 border-radius: 5px;
             }
             .kitsu-search:focus {
                 outline: none;
-                background-color: #241a24;
+                background-color: var(--nav-dark-focus);
             }
 
             .kitsu-noti {
                 padding: 1px;
-                background-color: #332532;
+                background-color: var(--nav-dark);
                 border-radius: 50%;
             }
             .kitsu-noti:hover {
-                background-color: #241a24;
+                background-color: var(--nav-dark-focus);
             }
             .kitsu-noti-icon {
                 filter: invert(64%) sepia(1%) saturate(0%) hue-rotate(206deg) brightness(96%) contrast(89%);
