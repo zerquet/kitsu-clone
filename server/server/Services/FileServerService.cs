@@ -6,7 +6,7 @@ namespace server.Services
     {
         public static string GetAnimeImage(string id)
         {
-            var filePath = @"\\WIN-PACE5S6T4AP\shared\" + id + ".jpg";
+            var filePath = @"\\S1DEREA1APTOP\shared\" + id + ".jpg";
             using var client = new WebClient();
 
             client.Credentials = new NetworkCredential("icaseecho@gmail.com", "161773");
@@ -21,7 +21,7 @@ namespace server.Services
             image.CopyTo(memoryStream);
             var imageData = memoryStream.ToArray();
 
-            var filePath = @"\\WIN-PACE5S6T4AP\shared\" + fileName + ".jpg";
+            var filePath = @"\\S1DEREA1APTOP\shared\" + fileName + ".jpg";
             using var client = new WebClient();
             client.Credentials = new NetworkCredential("icaseecho@gmail.com", "161773");
 
