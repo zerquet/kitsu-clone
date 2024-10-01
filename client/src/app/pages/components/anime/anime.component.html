@@ -9,40 +9,20 @@
     </div>
     <div id="anime-details-wrap">
         <div id="anime-image">
-            <img src="https://media.kitsu.app/anime/poster_images/12/large.jpg">
+            <img src="data:image/jpeg;base64, {{anime?.imageBase64}}">
         </div>
         <div id="anime-details">
                 <section id="media-title">
-                    <h2>One Piece</h2>
+                    <h2>{{anime?.title}}</h2>
                 </section>
                 <section id="media-description">
                     <p>
-                        One Piece follows the adventures of Monkey D. Luffy, a spirited young pirate with the ability to 
-                        stretch his body like rubber after eating a mystical fruit called the Gum-Gum Fruit. Luffy dreams of 
-                        becoming the King of the Pirates by finding the legendary treasure known as the One Piece, hidden at 
-                        the end of the Grand Line. To achieve his goal, he gathers a diverse crew known as the Straw Hat 
-                        Pirates, each with their own dreams and unique abilities. Together, they face powerful foes, uncover 
-                        ancient mysteries, and navigate a world filled with fantastical islands and dangerous seas, all
-                         while exploring themes of friendship, freedom, and adventure.
+                        {{anime?.description}}
                     </p>
                 </section>
                 <section id="media-tags">
                     <ul>
-                        <li>Absurdist Humor</li>&nbsp;
-                        <li>Action</li>&nbsp;
-                        <li>Adventure</li>&nbsp;
-                        <li>Comedy</li>&nbsp;
-                        <li>Crime</li>&nbsp;
-                        <li>Fantasy</li>&nbsp;
-                        <li>Fantasy World</li>&nbsp;
-                        <li>Friendship</li>&nbsp;
-                        <li>Martial Arts</li>&nbsp;
-                        <li>Navy</li>&nbsp;
-                        <li>Past</li>&nbsp;
-                        <li>Pirate</li>&nbsp;
-                        <li>Plot Continuity</li>&nbsp;
-                        <li>Shounen</li>&nbsp;
-                        <li>Slapstick</li>&nbsp;
+                        <li *ngFor="let genre of anime?.genres">{{genre}}</li>
                     </ul>
                 </section>
     </div>

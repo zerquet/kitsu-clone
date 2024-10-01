@@ -28,11 +28,16 @@ export class AddAnimeComponent {
     formData.append('title', this.title?.value!);
     formData.append('description', this.description?.value!); 
     formData.append('image', this.image?.value);
-    for(let i = 0; i < this.status?.value.length; i++) {
-      formData.append('status', this.status?.value[i]);
+
+    if (this.status?.value != null) {
+      for(let i = 0; i < this.status?.value.length; i++) {
+        formData.append('status', this.status?.value[i]);
+      }
     }
-    for(let i = 0; i < this.genres?.value.length; i++) {
-      formData.append('genres', this.genres?.value[i])
+    if (this.genres?.value != null) {
+      for(let i = 0; i < this.genres?.value.length; i++) {
+        formData.append('genres', this.genres?.value[i])
+      }
     }
     //ASP.NET Core (or any api that supports it) will read multiple assignments to the 'status' variable as an array of values, which is the expected data type. 
     //Ref: https://stackoverflow.com/a/9547490/20829897 & https://stackoverflow.com/a/28434829/20829897

@@ -30,34 +30,51 @@
             border: none;
             outline: none;
         }
-
-    .kitsu-below-search {
-        margin-top: 20px;
-        margin-bottom: 40px;
-    }
-        .kitsu-below-search a {
-            text-decoration: none;
-            color: var(--small-link);
-        }
-        .kitsu-below-search a:hover {
-            color: var(--small-link-hover);
-        }
         
         .kitsu-poster-list {
             display: flex;
+            flex-wrap: wrap;
             width: 100%;
         }
 
             .kitsu-poster-item {
-                width: 20%;
+                width: 18%;
                 padding-right: 10px;
                 padding-bottom: 10px;
                 border-radius: 1rem;
             }
+                .poster-position {
+                    position: relative;
+                }
 
-                .kitsu-poster-item img {
+                .poster-image img {
                     max-width: 100%;
                 }
+                .poster-overlay {
+                    opacity: 0;
+                    position: absolute;
+                    top: 0;
+                    bottom: 4px;
+                    left: 0;
+                    right: 0;
+                    border-radius: 3px;
+                }
+                .poster-overlay:hover {
+                    opacity: 1;
+                    background-image: linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.8) 50%,rgba(0,0,0,.8) 100%);
+                    background-size: auto 200%;
+                }
+                .poster-overlay a {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+                
+            /*Ref: https://stackoverflow.com/a/31478004/20829897*/
+            .filling-empty-space-childs {
+                width: 18%;
+                height: 0;
+            }
 
 #explore {
     width: 75%;
@@ -71,6 +88,7 @@
     background-color: var(--dropdown);
     padding: 20px;
     border-radius: 5px;
+    z-index: -1;
 }
     #categories h5 {
         margin-top: 5px;
@@ -78,8 +96,4 @@
         padding-bottom: 15px;
         border-bottom: var(--dropdown-border) solid 1px;
     }
-
-#favorite-categories {
-    padding-bottom: 40px;
-}
 

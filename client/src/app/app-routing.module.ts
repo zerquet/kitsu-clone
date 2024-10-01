@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: "add/anime", component: AddAnimeComponent},
   { path: 'explore/anime', component: ExploreAnimeComponent},
   { path: 'modify/anime', component: ModifyAnimeComponent},
-  { path: 'anime', component: AnimeComponent}
+  { path: 'anime/:id', component: AnimeComponent}
 ];
 
 @NgModule({

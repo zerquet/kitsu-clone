@@ -10,27 +10,20 @@
                 <input class="kitsu-search-bar" type="text" placeholder="What are you searching for?">
             </div>
         </div>
-        <div class="kitsu-below-search">
-            <small>Or, browse with the <a href="">advanced search</a></small>
-        </div>
         <div class="kitsu-explore-wrap">
-            <h4>Trending this week</h4>
+            <h4>Anime</h4>
             <div class="kitsu-poster-list">
-                <div class="kitsu-poster-item">
-                    <img src="https://media.kitsu.app/anime/poster_images/7442/medium.jpg" />
+                <div *ngFor="let poster of animes$.getValue()" class="kitsu-poster-item">
+                    <div class="poster-position">
+                        <div class="poster-image">
+                            <img src="data:image/jpeg;base64, {{poster.imageBase64}}" />
+                        </div>
+                        <div class="poster-overlay">
+                            <a href=""></a>
+                        </div>
+                    </div>
                 </div>
-                <div class="kitsu-poster-item">
-                    <img src="https://media.kitsu.app/anime/poster_images/7442/medium.jpg" />
-                </div>
-                <div class="kitsu-poster-item">
-                    <img src="https://media.kitsu.app/anime/poster_images/7442/medium.jpg" />
-                </div>
-                <div class="kitsu-poster-item">
-                    <img src="https://media.kitsu.app/anime/poster_images/7442/medium.jpg" />
-                </div>
-                <div class="kitsu-poster-item">
-                    <img src="https://media.kitsu.app/anime/poster_images/7442/medium.jpg" />
-                </div>
+                <div class="filling-empty-space-childs"></div>
             </div>
             <div>
 
@@ -38,10 +31,6 @@
         </div>
     </div>
     <div id="categories">
-        <div id="favorite-categories">
-            <h5>MY FAVORITE CATEGORIES</h5>
-            <small><strong>Favoriting categories will improve your recommendations</strong></small>
-        </div>
         <div id="rest-categories">
             <h5>CATEGORIES</h5>
             <small>
