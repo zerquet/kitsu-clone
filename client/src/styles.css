@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+    --techgray: #abb4dc !important;
+    --grayonwhite: #e5e5e5;
+    --grayonwhiteBorder: #a9a9a9;
+    --grayText: #7c7c7c;
+    --grayhover: #fafafa;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/*Override Material UI styles*/
+.mdc-slider__track--inactive {
+    border: 1px solid #000 !important;
+}
+
+.mat-ripple.mat-mdc-focus-indicator {
+    display: none;
+}

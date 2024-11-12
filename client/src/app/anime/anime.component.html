@@ -1,0 +1,95 @@
+<div *ngIf="anime$ | async; let anime">
+    <div *ngIf="anime.coverImageBase64 !== null; else defaultCover" id="coverPhoto" style='background: url(data:image/jpeg;base64,{{anime.coverImageBase64}})'></div>
+    <ng-template #defaultCover>
+        <div id="coverPhoto" class="defaultCoverPhoto"></div>
+    </ng-template>
+    <div class="container" style="border: 1px solid red;">
+        <div id="infoBar" class="py-2">Summary</div> 
+    </div>
+    <div class="container d-flex" style="border: 1px solid blue;">
+        <div id="imgContainer" style="border: 1px solid green;">
+            <img src="data:image/jpeg;base64, {{anime.imageBase64}}" />
+            <div class="mt-2" style="border: 1px solid orange;">
+                @if(completed === false && wantToWatch === false && startedWatching === false) {
+                    <div><input class="libraryBtn mb-1" id="completedBtn" type="button" value="Completed" (click)="markCompleted()"/></div>
+                    <div><input class="libraryBtn mb-1" id="startedWatchingBtn" type="button" value="Started Watching" (click)="markStartedWatching()"/></div>
+                    <div><input class="libraryBtn mb-1" id="wantToWatchBtn" type="button" value="Want to Watch" (click)="markWantToWatch()"/></div>
+                }
+                @else if(completed === true) {
+                    <div id="completedInfo" class="mb-1"><strong>You have <span>Completed</span> this anime.</strong></div>
+                    <div class="mb-1">
+                        <label for="rating">Rating: </label>
+                        <select id="rating">
+                            <option selected value="-">-</option>
+                            <option value="1">Awful</option>
+                            <option value="2">Meh</option>
+                            <option value="3">Good</option>
+                            <option value="4">Great</option>
+                        </select>
+                    </div>
+                    <div class="mb-1">
+                        <label for="changeStatus">Change status: </label>
+                        <select id="rating">
+                            <option selected disabled>Completed</option>
+                            <option value="" (click)="markStartedWatching()">Started Watching</option>
+                            <option value="" (click)="markWantToWatch()">Want to Watch</option>
+                            <option value="" (click)="clearStatus()">-Remove Status-</option>
+                        </select>
+                    </div>
+                }
+                @else if(wantToWatch === true) {
+                    <div id="wantToWatchInfo" class="mb-1"><strong>Saved in <span>Want to Watch</span></strong></div>
+                    <div class="mb-1">
+                        <label for="changeStatus">Change status: </label>
+                        <select id="rating">
+                            <option selected disabled>Want to Watch</option>
+                            <option value="" (click)="markStartedWatching()">Started Watching</option>
+                            <option value="" (click)="markCompleted()">Completed</option>
+                            <option value="" (click)="clearStatus()">-Remove Status-</option>
+                        </select>
+                    </div>
+                }
+                @else if(startedWatching === true) {
+                    <div id="startedWatchingInfo" class="mb-1"><strong>You are <span>Currently Watching</span> this anime.</strong></div>
+                    <div class="mb-1">
+                        <label for="episodeCounter">Episode Progress: </label>
+                        <input type="number" id="episodeCounter" min="0" [max]="anime.episodes"><span>/ {{anime.episodes}}</span>
+                    </div>
+                    <div class="mb-1">
+                        <label for="rating">Rating: </label>
+                        <select id="rating">
+                            <option selected value="-">-</option>
+                            <option value="1">Awful</option>
+                            <option value="2">Meh</option>
+                            <option value="3">Good</option>
+                            <option value="4">Great</option>
+                        </select>
+                    </div>
+                    <div class="mb-1">
+                        <label for="changeStatus">Change status: </label>
+                        <select id="rating">
+                            <option selected disabled>Started Watching</option>
+                            <option value="" (click)="markCompleted()">Completed</option>
+                            <option value="" (click)="markWantToWatch()">Want to Watch</option>
+                            <option value="" (click)="clearStatus()">-Remove Status-</option>
+                        </select>
+                    </div>
+                }
+            </div>
+        </div>
+        <div id="animeInfo" class="ps-3">
+            <div id="title">
+                <strong>{{anime.title}}</strong> 
+                <span id="info" class="ps-2"><strong>{{anime.year}} | {{anime.mediaType}} | {{anime.episodes}} Episodes</strong></span>
+                <span id="admin-link" class="ps-2"><a routerLink="../../update-anime/{{anime.id}}">Update entry</a></span>
+            </div>
+            <div><strong id="highRating">Overall Rating {{anime.score}}%</strong></div>
+            <div id="description" class="mt-2">{{anime.description}}</div>
+            <ul id="genres" class="d-flex flex-wrap flex-row ps-0 mt-5">
+                @for (cat of anime.genres; track cat) {
+                    <li class="px-2 py-1 me-2">{{cat}}</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

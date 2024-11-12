@@ -1,0 +1,125 @@
+<div class="container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <h4 class="text-center">Update an anime entry</h4>
+        <div>
+            <label for="title" class="fieldName">Title </label>
+            <input id="title" type="text" formControlName="title" class="fieldBox">
+            <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required requiredTxtLeftPadding">
+                <div *ngIf="title?.hasError('required')">
+                    Title is required.
+                </div>
+            </div>
+        </div>
+    
+        <div class="mt-2">
+            <label for="description" class="fieldName align-top">Description </label>
+            <textarea id="description" formControlName="description" rows="6" class="fieldBox"></textarea>
+        </div>
+    
+        <div class="mt-2">
+            <label for="image" class="fieldName">Image </label>
+            <input id="image" type="file" formControlName="image" (change)="onImagePicked($event)" class="fieldBox">
+            <div *ngIf="image?.invalid && (image?.dirty || image?.touched)" class="required requiredTxtLeftPadding">
+                <div *ngIf="image?.hasError('required')">
+                    Image is required.
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="coverImage" class="fieldName">Cover Image </label>
+            <input id="coverImage" type="file" formControlName="coverImage" (change)="onCoverImagePicked($event)" class="fieldBox">
+        </div>
+
+        <div class="mt-1">
+            <small class="requiredTxtLeftPadding fieldBox">NOTE: If no image or cover image is selected, the current one will remain to be used.</small>
+        </div>
+
+        <div class="mt-2">
+            <div class="fieldName d-inline-block align-top">
+                <label for="status">Status </label><br>
+                <button type="button" (click)="clearStatus()">Clear</button>
+            </div>
+            <select id="status" formControlName="status" multiple class="fieldBox">
+                <option value="trending this week">Trending this week</option>
+                <option value="top airing anime">Top Airing Anime</option>
+                <option value="top upcoming anime">Top Upcoming Anime</option>
+                <option value="highest rated anime">Highest Rated Anime</option>
+                <option value="most popular">Most Popular</option>
+            </select>
+        </div>
+
+        <div class="mt-2">
+            <div class="fieldName d-inline-block align-top">
+                <label for="genres">Genres </label><br>
+                <button type="button" (click)="clearGenres()">Clear</button>
+            </div>
+            <select id="genres" formControlName="genres" multiple class="fieldBox">
+                <option value="Romance">Romance</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Drama">Drama</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Sports">Sports</option>
+                <option value="Music">Music</option>
+                <option value="Supernatural">Supernatural</option>
+                <option value="Harem">Harem</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Isekai">Isekai</option>
+                <option value="Military">Military</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Action">Action</option>
+                <option value="School Life">School Life</option>
+                <option value="Slice of Life">Slice of Life</option>
+                <option value="Sci-fi">Science Fiction</option>
+                <option value="Ecchi">Ecchi</option>
+                <option value="Historical">Historical</option>
+                <option value="Magic">Magic</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Psycho">Psychological</option>
+                <option value="Horror">Horror</option>
+                <option value="Mecha">Mecha</option>
+                <option value="Superpower">Super Power</option>
+                <option value="Violence">Violence</option>
+            </select>
+        </div>
+
+        <div class="mt-2">
+            <label for="year" class="fieldName">Year First Aired </label>
+            <input id="year" type="text" formControlName="year" class="fieldBox" placeholder="e.g. 2024">
+            <div *ngIf="year?.invalid && (year?.touched || year?.dirty)" class="required">
+                <div *ngIf="year?.hasError('pattern')">
+                    Year must only contain numbers
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="episodes" class="fieldName">Total Episodes </label>
+            <input id="episodes" type="text" formControlName="episodes" class="fieldBox" placeholder="e.g. 12, 24, 500, etc.">
+            <div *ngIf="episodes?.invalid && (episodes?.touched || episodes?.dirty)" class="required">
+                <div *ngIf="episodes?.hasError('pattern')">
+                    Number of episodes must be a number
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="mediaType" class="fieldName">Media Type (TV, Movie, etc)</label>
+            <input id="mediaType" type="text" formControlName="mediaType" class="fieldBox" placeholder="e.g. 'TV', 'Movie', 'ONA' ">
+        </div>
+
+        <div class="mt-2">
+            <label for="score" class="fieldName">Score </label>
+            <input id="score" type="text" formControlName="score" class="fieldBox" placeholder="0-100">
+            <div *ngIf="score?.invalid && (score?.touched || score?.dirty)" class="required">
+                <div *ngIf="score?.hasError('pattern')">
+                    Score must be a number
+                </div>
+            </div>
+        </div>
+    
+        <div class="text-center mt-2">
+            <button type="submit" [disabled]="!form.valid">Update Anime</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,112 @@
+#coverPhoto {
+    height: 350px;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+.defaultCoverPhoto {
+    background: url("https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png");
+}
+
+#infoBar {
+    padding-left: 22%;
+}
+
+#imgContainer {
+    width: 20%;
+}
+
+#imgContainer img {
+    width: 100%;
+    /* height: 100%; */
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+#animeInfo {
+    width: 80%;
+}
+
+#title {
+    font-size: 1.5rem;
+}
+
+#info {
+    font-size: 0.9rem;
+    color: var(--grayText);
+}
+
+#highRating {
+    color: #06c332;
+}
+
+#genres {
+    list-style: none;
+}
+
+#genres li {
+    background-color: var(--grayonwhite);
+    border: 1px solid var(--grayonwhiteBorder);
+}
+
+.libraryBtn {
+    width: 100%;
+    border-style: none;
+    border-radius: 5px;
+    color: #fff;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+#completedBtn {
+    background-color: #09a703;
+}
+#completedBtn:hover {
+    background-color: #069501;
+}
+
+#startedWatchingBtn {
+    background-color: #2b79c2;
+}
+#startedWatchingBtn:hover {
+    background-color: #2668a6;
+}
+
+#wantToWatchBtn {
+    background-color: #a235b3;
+}
+#wantToWatchBtn:hover {
+    background-color: #862b94;
+}
+
+#completedInfo {
+    color: var(--grayText);
+}
+
+#completedInfo span {
+    color: #09a703;
+}
+
+#wantToWatchInfo {
+    color: var(--grayText);
+}
+
+#wantToWatchInfo span {
+    color: #a235b3;
+}
+
+#startedWatchingInfo {
+    color: var(--grayText);
+}
+
+#startedWatchingInfo span {
+    color: #2b79c2;
+}
+
+#admin-link {
+    font-size: 0.9rem;
+}
+
+#episodeCounter {
+    width: 25%;
+}
