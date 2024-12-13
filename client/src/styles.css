@@ -5,9 +5,13 @@
     --grayonwhiteBorder: #a9a9a9;
     --grayText: #7c7c7c;
     --grayhover: #fafafa;
+    --grayBodyBg: #f7f7f7;
+    --whiteOnGrayBg: #fff;
+    --blueLinkHover: #ad9ff3;
+    --blueLink: #674af8;
 }
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: var(--grayBodyBg); }
 
 /*Override Material UI styles*/
 .mdc-slider__track--inactive {

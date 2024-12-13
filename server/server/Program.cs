@@ -62,6 +62,7 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();  
+builder.Services.AddScoped<IAnimeLibraryEntryService, AnimeLibraryEntryService>();
 
 builder.Services.AddIdentityServices(builder.Configuration);
 

@@ -10,70 +10,57 @@
         <div id="imgContainer" style="border: 1px solid green;">
             <img src="data:image/jpeg;base64, {{anime.imageBase64}}" />
             <div class="mt-2" style="border: 1px solid orange;">
-                @if(completed === false && wantToWatch === false && startedWatching === false) {
-                    <div><input class="libraryBtn mb-1" id="completedBtn" type="button" value="Completed" (click)="markCompleted()"/></div>
-                    <div><input class="libraryBtn mb-1" id="startedWatchingBtn" type="button" value="Started Watching" (click)="markStartedWatching()"/></div>
-                    <div><input class="libraryBtn mb-1" id="wantToWatchBtn" type="button" value="Want to Watch" (click)="markWantToWatch()"/></div>
+                <!--Anime not in user's library-->
+                @if(libraryEntry.status === null) {
+                    <div><input class="libraryBtn mb-1" id="completedBtn" type="button" value="Completed" (click)="setAsCompleted(anime)"/></div>
+                    <div><input class="libraryBtn mb-1" id="startedWatchingBtn" type="button" value="Started Watching" (click)="setAsStartedWatching(anime)"/></div>
+                    <div><input class="libraryBtn mb-1" id="wantToWatchBtn" type="button" value="Want to Watch" (click)="setAsWantToWatch(anime)"/></div>
                 }
-                @else if(completed === true) {
-                    <div id="completedInfo" class="mb-1"><strong>You have <span>Completed</span> this anime.</strong></div>
-                    <div class="mb-1">
-                        <label for="rating">Rating: </label>
-                        <select id="rating">
-                            <option selected value="-">-</option>
-                            <option value="1">Awful</option>
-                            <option value="2">Meh</option>
-                            <option value="3">Good</option>
-                            <option value="4">Great</option>
-                        </select>
-                    </div>
-                    <div class="mb-1">
-                        <label for="changeStatus">Change status: </label>
-                        <select id="rating">
-                            <option selected disabled>Completed</option>
-                            <option value="" (click)="markStartedWatching()">Started Watching</option>
-                            <option value="" (click)="markWantToWatch()">Want to Watch</option>
-                            <option value="" (click)="clearStatus()">-Remove Status-</option>
-                        </select>
-                    </div>
-                }
-                @else if(wantToWatch === true) {
-                    <div id="wantToWatchInfo" class="mb-1"><strong>Saved in <span>Want to Watch</span></strong></div>
-                    <div class="mb-1">
-                        <label for="changeStatus">Change status: </label>
-                        <select id="rating">
-                            <option selected disabled>Want to Watch</option>
-                            <option value="" (click)="markStartedWatching()">Started Watching</option>
-                            <option value="" (click)="markCompleted()">Completed</option>
-                            <option value="" (click)="clearStatus()">-Remove Status-</option>
-                        </select>
-                    </div>
-                }
-                @else if(startedWatching === true) {
-                    <div id="startedWatchingInfo" class="mb-1"><strong>You are <span>Currently Watching</span> this anime.</strong></div>
-                    <div class="mb-1">
+                <!--User completed anime-->
+                @else {
+                    @if(libraryEntry.status === "completed") {
+                        <div id="completedInfo" class="mb-1"><strong>You have <span>Completed</span> this anime.</strong></div>
+                    }
+                    <!--User added to Wants to Watch -->
+                    @else if(libraryEntry.status === "planning") {
+                        <div id="wantToWatchInfo" class="mb-1"><strong>Saved in <span>Want to Watch</span></strong></div>
+                    }
+                    <!--User started watching anime-->
+                    @else if(libraryEntry.status === "watching") {
+                        <div id="startedWatchingInfo" class="mb-1"><strong>You are <span>Currently Watching</span> this anime.</strong></div>
+                    }
+                    <form method="post" [formGroup]="form" (submit)="saveLibraryEntryUpdates(anime)">
                         <label for="episodeCounter">Episode Progress: </label>
-                        <input type="number" id="episodeCounter" min="0" [max]="anime.episodes"><span>/ {{anime.episodes}}</span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="rating">Rating: </label>
-                        <select id="rating">
-                            <option selected value="-">-</option>
-                            <option value="1">Awful</option>
-                            <option value="2">Meh</option>
-                            <option value="3">Good</option>
-                            <option value="4">Great</option>
-                        </select>
-                    </div>
-                    <div class="mb-1">
-                        <label for="changeStatus">Change status: </label>
-                        <select id="rating">
-                            <option selected disabled>Started Watching</option>
-                            <option value="" (click)="markCompleted()">Completed</option>
-                            <option value="" (click)="markWantToWatch()">Want to Watch</option>
-                            <option value="" (click)="clearStatus()">-Remove Status-</option>
-                        </select>
-                    </div>
+                        <div class="mb-1">
+                            <input formControlName="episodeProgress" type="number" id="episodeCounter" min="0" [max]="anime.episodes"><span>/ {{anime.episodes}}</span>
+                        </div>
+                        <div class="mb-1">
+                            <label for="rating">Rating: </label>
+                            <select formControlName="rating" id="rating">
+                                <option value="">-</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="mb-1">
+                            <label for="changeStatus">Change status: </label>
+                            <select formControlName="status" id="rating">
+                                <option value="completed">Completed</option>
+                                <option value="watching">Currently Watching</option>
+                                <option value="planning">Want to Watch</option>
+                            </select>
+                        </div>
+                        <input type="submit" value="Save changes" />
+                        <a href="javascript:void(0);" (click)="deleteEntry(anime)"><small>Delete entry</small></a>
+                    </form>
                 }
             </div>
         </div>
