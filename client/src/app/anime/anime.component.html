@@ -73,8 +73,8 @@
             <div><strong id="highRating">Overall Rating {{anime.score}}%</strong></div>
             <div id="description" class="mt-2">{{anime.description}}</div>
             <ul id="genres" class="d-flex flex-wrap flex-row ps-0 mt-5">
-                @for (cat of anime.genres; track cat) {
-                    <li class="px-2 py-1 me-2">{{cat}}</li>
+                @for (cat of anime.categories; track cat) {
+                    <li class="px-2 py-1 me-2"><a href="javascript:void(0);" routerLink="../../category/{{cat.name}}">{{cat.name}}</a></li>
                 }
             </ul>
         </div>

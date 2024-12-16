@@ -6,6 +6,9 @@ import { UserLibraryService } from '../services/user-library.service';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, Subject } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { LocalApiService } from '../services/localApi.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditEntryComponent } from '../edit-entry/edit-entry.component';
+import { UserLibraryDataService } from '../services/user-library-data.service';
 
 @Component({
   selector: 'app-library',
@@ -15,8 +18,9 @@ import { LocalApiService } from '../services/localApi.service';
   styleUrl: './library.component.css'
 })
 export class LibraryComponent implements OnInit {
-  private userLibraryService: UserLibraryService = inject(UserLibraryService);
-  private localApiService = inject(LocalApiService);
+  private userLibraryService = inject(UserLibraryService);
+  private modalService = inject(NgbModal);
+  private userLibraryDataService = inject(UserLibraryDataService);
   form: FormGroup = new FormGroup({ search: new FormControl() });
   sortDirection$ = new BehaviorSubject("asc");
   sortOption$ = new BehaviorSubject("Title");
@@ -32,11 +36,11 @@ export class LibraryComponent implements OnInit {
   // .pipe(
   //   map(list => this.sorter(list, this.sortOption$.value, this.sortDirection$.value, this.libraryType$.value, this.searchTerm$.value))
   // );
-  originalAnimeList = new BehaviorSubject<LibraryItemDto[]>([]);
+  //originalAnimeList = new BehaviorSubject<LibraryItemDto[]>([]);
   //When behavior subject values are updated, the filteted list is too. 
   //https://chatgpt.com/share/675410d9-9a68-8003-9599-c495ff36fb9e
   filteredAnimeList$ = combineLatest([
-    this.originalAnimeList,
+    this.userLibraryDataService.originalAnimeList$,
     this.sortDirection$,
     this.sortOption$,
     this.libraryType$,
@@ -85,7 +89,7 @@ export class LibraryComponent implements OnInit {
     .subscribe(term => this.searchTerm$.next(term.toLowerCase())); //use (input) instead to avoid 
     //using ngOnInit?
 
-    this.userLibraryService.getLibrary().subscribe(res => this.originalAnimeList.next(res));
+    this.userLibraryService.getLibrary().subscribe(res => this.userLibraryDataService.originalAnimeList$.next(res));
     //this.localApiService.getLibrary().subscribe(res => this.originalAnimeList.next(res));
   }
 
@@ -136,6 +140,11 @@ export class LibraryComponent implements OnInit {
     // )
   }
 
+  openEditModal(entry: LibraryItemDto) {
+    const modal = this.modalService.open(EditEntryComponent,);
+    modal.componentInstance.initializeModalData({...entry});
+  }
+
   onRatingClick(animeId: number) {
     //edit = user edits rating
     //read = user is just reading the value/not editing
@@ -172,14 +181,14 @@ export class LibraryComponent implements OnInit {
           //Hmm, perhaps use BehaviorSubject of type LibraryItemDto[] and update that instead. 
           //Then use combineLatest - add its subject and the filtered list will automatically update when we .next() the subject.
           //This will also conveniently update filteredList$. This may also conflict with the logic for having an originalList$
-          let updatedCollection = this.originalAnimeList.value.
+          let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
             map(item => {
               if(item.libraryEntryId === res.id) {
                 item.rating = Number(res.rating)
               }
               return item;
             });
-            this.originalAnimeList.next(updatedCollection);
+            this.userLibraryDataService.originalAnimeList$.next(updatedCollection);
         },
         error: e => {
         },
@@ -190,14 +199,14 @@ export class LibraryComponent implements OnInit {
     this.userLibraryService.editStatus(currEntry.libraryEntryId, currEntry.animeId, currEntry.status, currEntry.episodesSeen, currEntry.rating)
       .subscribe({
         next: res => {
-          let updatedCollection = this.originalAnimeList.value.
+          let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
             map(item => {
               if(item.libraryEntryId === res.id) {
                 item.episodesSeen = res.episodesSeen;
               }
               return item;
             });
-            this.originalAnimeList.next(updatedCollection);
+            this.userLibraryDataService.originalAnimeList$.next(updatedCollection);
             this.potentialProgressUpdate$.next(undefined);
         }
       })

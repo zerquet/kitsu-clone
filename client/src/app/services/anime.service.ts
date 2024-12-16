@@ -20,6 +20,10 @@ export class AnimeService {
       .pipe(shareReplay(1));
   }
 
+  getAnimesByCategory(category: string) {
+    return this.http.get<Anime[]>(`${AnimeService.url}/category/${category}`).pipe(shareReplay(1));
+  }
+
   addAnime(formData: FormData) {
     return this.http.post<void>(AnimeService.url, formData);
   }

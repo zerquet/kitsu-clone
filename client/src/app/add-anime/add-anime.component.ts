@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AnimeService } from '../services/anime.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, NgClass } from '@angular/common';
 import { AppToastService } from '../services/app-toast.service';
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-add-anime',
@@ -12,6 +13,8 @@ import { AppToastService } from '../services/app-toast.service';
   styleUrl: './add-anime.component.css'
 })
 export class AddAnimeComponent {
+  categoryService = inject(CategoryService);
+  availableCategories$ = this.categoryService.getAvailableCategories();
   form: FormGroup;
 
   constructor(private animeService: AnimeService, private toastService: AppToastService) {
@@ -45,6 +48,7 @@ export class AddAnimeComponent {
         formData.append('status', this.status?.value[i]);
       }
     }
+    debugger;
     if (this.genres?.value != null) {
       for(let i = 0; i < this.genres?.value.length; i++) {
         formData.append('genres', this.genres?.value[i])

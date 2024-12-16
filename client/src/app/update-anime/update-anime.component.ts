@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AnimeService } from '../services/anime.service';
 import { AppToastService } from '../services/app-toast.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { distinctUntilChanged, mergeMap, Observable } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, mergeMap, Observable } from 'rxjs';
 import { Anime } from '../interfaces/anime';
+import { CategoryService } from '../services/category.service';
+import { CategoryDto } from '../interfaces/categoryDto';
 
 @Component({
   selector: 'app-update-anime',
@@ -15,6 +17,8 @@ import { Anime } from '../interfaces/anime';
   styleUrl: './update-anime.component.css'
 })
 export class UpdateAnimeComponent {
+  categoryService = inject(CategoryService);
+  availableCategories$ = new BehaviorSubject<CategoryDto[]>([]);
   form: FormGroup;
   id: string = "";
 
@@ -31,6 +35,9 @@ export class UpdateAnimeComponent {
       mediaType: new FormControl(),
       score: new FormControl('', Validators.pattern("[0-9]*"))
     });
+    this.categoryService.getAvailableCategories().subscribe(res => {
+      this.availableCategories$.next(res);
+    })
     this.route.params.pipe(
       distinctUntilChanged(),
       mergeMap(params => this.animeService.getAnime(params['id']))
@@ -39,7 +46,7 @@ export class UpdateAnimeComponent {
       this.form.patchValue({
         title: anime.title,
         description: anime.description,
-        genres: anime.genres,
+        genres: anime.categories.map(x => x.name),
         episodes: anime.episodes,
         year: anime.year,
         mediaType: anime.mediaType,
@@ -67,7 +74,13 @@ export class UpdateAnimeComponent {
     }
     if (this.genres?.value != null) {
       for(let i = 0; i < this.genres?.value.length; i++) {
-        formData.append('genres', this.genres?.value[i])
+        let catName = this.genres?.value[i];
+        let catObj: CategoryDto = {
+          name: catName, 
+          id: this.availableCategories$.value.find(c => c.name === catName)?.id!, 
+          description: ""
+        }
+        formData.append('genres', JSON.stringify(catObj))
       }
     }
   

@@ -10,7 +10,7 @@ namespace server.Models
         public KitsuUser KitsuUser { get; set; } = null!;
         public Anime Anime { get; set; } = null!;
         public string? Status { get; set; }
-        public int? Rating { get; set; } //null = no rating. 1-4 regular ratings. 0 not used. 
+        public int? Rating { get; set; } //null = no rating. 1-10 regular ratings. 0 not used. 
         public int EpisodesSeen { get; set; }
     }
 }

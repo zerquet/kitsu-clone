@@ -13,7 +13,7 @@ namespace server.Mappers
                 Title = animeModel.Title,
                 Description = animeModel.Description,
                 Score = animeModel.Score,
-                Genres = animeModel.Genres,
+                Categories = animeModel.Categories.Select(x => x.ToCategoryDto()).ToList(),
                 Status = animeModel.Status,
                 ImageBase64 = imageBase64,
                 Year = animeModel.Year,
@@ -30,7 +30,6 @@ namespace server.Mappers
                 Title = anime.Title,
                 Description = anime.Description == "null" ? null : anime.Description,
                 Score = anime.Score,
-                Genres = anime.Genres,
                 Status = anime.Status,
                 ImageUrl = imageId,
                 Year = anime.Year,
@@ -47,7 +46,6 @@ namespace server.Mappers
             anime.Title = animeDto.Title;
             anime.Description = animeDto.Description;
             anime.Score = animeDto.Score;
-            anime.Genres = animeDto.Genres;
             anime.Status = animeDto.Status;
             anime.ImageUrl = imageId ?? anime.ImageUrl;
             anime.Year = animeDto.Year;

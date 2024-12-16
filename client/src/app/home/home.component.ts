@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AnimeService } from '../services/anime.service';
 import { debounceTime, distinctUntilChanged, filter, map, mergeMap, Observable, of, OperatorFunction, Subject, switchMap, takeLast, tap } from 'rxjs';
 import { Anime } from '../interfaces/anime';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Form, FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,8 @@ import { Form, FormControl, FormGroup, FormGroupDirective, FormsModule, Reactive
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+  categoryService = inject(CategoryService)
+  categories$ = this.categoryService.getAvailableCategories();
   animes: Observable<Anime[]>;
   showCardTitle: number;
   list: Anime[];

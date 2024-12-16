@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using server.Dtos.Anime;
+using server.Dtos.Category;
 using server.Mappers;
-using server.Models;
 using server.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace server.Controllers
 {
@@ -13,10 +13,12 @@ namespace server.Controllers
     public class AnimeController : ControllerBase
     {
         private readonly IAnimeService _animeService;
+        private readonly ICategoryService _categoryService;
 
-        public AnimeController(IAnimeService animeService)
+        public AnimeController(IAnimeService animeService, ICategoryService categoryService)
         {
             _animeService = animeService;
+            _categoryService = categoryService;
         }
 
         [HttpGet("{id}")]
@@ -41,6 +43,18 @@ namespace server.Controllers
             return Ok(model);
         }
 
+        [HttpGet("category/{category}")]
+        public async Task<IActionResult> GetByCategory(string category)
+        {
+            var categoryMatch = await _categoryService.GetCategoryByName(category);
+            if (categoryMatch == null) return NotFound();
+            var results = await _animeService.GetByCategoryId(categoryMatch.Id);
+            var model = results
+                .Select(record => AnimeMapper.ToAnimeDto(record, FileServerService.GetAnimeImage(record.ImageUrl!), FileServerService.GetAnimeImage(record.CoverImageId!)))
+                .ToList();
+            return Ok(model);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] CreateAnimeDto animeDto)
         {
@@ -59,8 +73,8 @@ namespace server.Controllers
                 FileServerService.PostAnimeImage(coverImageId, animeDto.CoverImage);
             }
             var anime = AnimeMapper.ToAnimeFromCreate(animeDto, imageId, coverImageId);
-
             await _animeService.AddAnime(anime);
+            await _animeService.AddCategories(animeDto.Genres, anime.Id);
             return Created();
         }
 
@@ -82,8 +96,10 @@ namespace server.Controllers
                 coverImageId= Guid.NewGuid().ToString();
                 FileServerService.PostAnimeImage(coverImageId, animeDto.CoverImage); //delete previous cover too?
             }
+            var newCategories = animeDto.Genres.Select(c => JsonConvert.DeserializeObject<CategoryDto>(c)).ToList();
             AnimeMapper.ToAnimeFromUpdate(animeDto, animeMatch, imageId, coverImageId);
             _animeService.UpdateAnime(animeMatch);
+            await _animeService.UpdateCategories(animeMatch, newCategories.Select(c => c.Id).ToList());
             return Ok();
         }
 

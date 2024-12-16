@@ -26,6 +26,7 @@
 
 #searchOptionsBtn>a {
     border: 1px solid var(--grayonwhiteBorder);
+    background-color: var(--whiteOnGrayBg);
 }
 
 #sortOptions i:hover {
@@ -95,6 +96,10 @@ input.epsSeenValEdit {
 
 .ratingCell, .progressCell, .editCell {
     border: 1px solid var(--grayonwhiteBorder);
+}
+
+.editCell {
+    text-align: center;
 }
 
 .titleCell, thead {

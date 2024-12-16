@@ -81,7 +81,7 @@
                                             <span class="increaseProgress" (click)="onIncrementProgressClick(anime)"><i class="bi bi-plus-circle-fill"></i></span>
                                         }
                                     </span></td>
-                                    <td class="editCell"><input type="button" value="Edit"></td>
+                                    <td class="editCell"><input type="button" value="Edit" (click)="openEditModal(anime)"></td>
                                 </tr>
                             }
                             @if(animeList.length === 0) {

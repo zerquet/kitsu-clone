@@ -7,7 +7,7 @@
         public string? Description { get; set; }
         public int? Score { get; set; }
         public List<string> Genres { get; set; } = [];
-        public List<string> Status { get; set; } = [];
+        public string? Status { get; set; }
         public IFormFile? Image { get; set; }
         public int? Year { get; set; }
         public IFormFile? CoverImage { get; set; }

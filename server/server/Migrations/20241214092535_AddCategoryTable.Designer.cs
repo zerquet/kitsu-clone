@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Data;
 
@@ -11,9 +12,11 @@ using server.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214092535_AddCategoryTable")]
+    partial class AddCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0470ca54-ef5e-4114-ae11-422c340678de",
+                            Id = "33bd4a5b-5cc9-4d70-8660-26396b8916ad",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8ee56fc4-c834-499a-a6af-ba8641c34e11",
+                            Id = "41eeefef-0d27-4606-9f1b-b3b65bf2db12",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -183,43 +186,24 @@ namespace server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndAirDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnglishTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EpisodeLength")
-                        .HasColumnType("int");
-
                     b.Property<int?>("Episodes")
                         .HasColumnType("int");
 
+                    b.Property<string>("Genres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JapaneseTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JapaneseTitleRomaji")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Rating")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("Score")
                         .HasColumnType("int");
 
-                    b.Property<string>("Season")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StartAirDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Studios")
@@ -258,7 +242,7 @@ namespace server.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("AnimeCategory", (string)null);
+                    b.ToTable("AnimeCategory");
                 });
 
             modelBuilder.Entity("server.Models.AnimeLibraryEntry", b =>

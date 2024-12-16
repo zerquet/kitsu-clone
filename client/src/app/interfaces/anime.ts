@@ -1,8 +1,10 @@
+import { CategoryDto } from "./categoryDto";
+
 export interface Anime {
     id: number;
     title: string;
     description: string;
-    genres: string[];
+    categories: CategoryDto[] 
     image: string; //post/put
     imageBase64: string; //get
     coverImage: string; //post/put
