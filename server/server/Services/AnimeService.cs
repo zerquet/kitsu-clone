@@ -11,7 +11,7 @@ namespace server.Services
         Task<List<Anime>> GetAll();
         Task<IReadOnlyList<Anime>> GetByCategoryId(int categoryId);
         Task AddAnime(Anime anime);
-        void UpdateAnime(Anime anime);
+        Task UpdateAnime(Anime anime);
         Task<List<Anime>> MiniSearch(string term);
         Task<List<Anime>> AdvancedSearch(
             string? term, int? minYear, int? maxYear, int? minEpisodes, int? maxEpisodes, int? minRating, int? maxRating, string[]? mediaType);
@@ -47,9 +47,9 @@ namespace server.Services
             await _context.SaveChangesAsync();
         }
 
-        public void UpdateAnime(Anime anime)
+        public async Task UpdateAnime(Anime anime)
         {
-            _context.SaveChangesAsync();
+             await _context.SaveChangesAsync();
         }
 
         public async Task<List<Anime>> MiniSearch(string term)

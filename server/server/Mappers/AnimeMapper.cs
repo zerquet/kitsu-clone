@@ -20,7 +20,15 @@ namespace server.Mappers
                 Episodes = animeModel.Episodes,
                 MediaType = animeModel.MediaType,
                 Studios = animeModel.Studios,
-                CoverImageBase64 = coverImageBase64
+                CoverImageBase64 = coverImageBase64,
+                EnglishTitle = animeModel.EnglishTitle,
+                JapaneseTitle = animeModel.JapaneseTitle,
+                JapaneseTitleRomaji = animeModel.JapaneseTitleRomaji,
+                Season = animeModel.Season,
+                StartAirDate = animeModel.StartAirDate,
+                EndAirDate = animeModel.EndAirDate,
+                Rating = animeModel.Rating,
+                EpisodeLength = animeModel.EpisodeLength
             };
         }
         public static Anime ToAnimeFromCreate(this CreateAnimeDto anime, string? imageId, string? coverImageId)
@@ -53,6 +61,14 @@ namespace server.Mappers
             anime.CoverImageId = coverImageId ?? anime.CoverImageId;
             anime.Studios = animeDto.Studios;
             anime.MediaType = animeDto.MediaType;
+            anime.EnglishTitle = animeDto.EnglishTitle;
+            anime.JapaneseTitle = animeDto.JapaneseTitle;
+            anime.JapaneseTitleRomaji = animeDto.JapaneseTitleRomaji;
+            anime.Season = animeDto.Season;
+            anime.StartAirDate = animeDto.StartAirDate;
+            anime.EndAirDate = animeDto.EndAirDate;
+            anime.Rating = animeDto.Rating;
+            anime.EpisodeLength = animeDto.EpisodeLength;
         }
     }
 }

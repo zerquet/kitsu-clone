@@ -1,0 +1,195 @@
+#coverPhoto {
+    height: 350px;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+.defaultCoverPhoto {
+    background: url("https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png");
+}
+
+#infoBar {
+    padding-left: 22%;
+}
+
+#library {
+    width: 70%;
+}
+
+#library-menu {
+    width: 30%;
+}
+
+#searchLibrary {
+    margin-top: 20px;
+}
+
+#searchOptionsBtn>a {
+    border: 1px solid var(--border-lightgray);
+    background-color: var(--background-white);
+}
+
+#sortOptions i:hover {
+    cursor: pointer;
+}
+
+.imgSquare {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.imgSquare img {
+    object-fit: contain;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.libraryItemTitle {
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.libraryItemTitle:hover {
+    color: var(--hover-orange);
+    cursor: pointer;
+}
+
+#libraryList {
+    border: 1px solid var(--border-lightgray);
+    border-radius: 3px;
+}
+
+table {
+    width: 100%;
+}
+
+tbody {
+    background-color: var(--background-white);
+}
+
+th:not(:nth-of-type(1)) {
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.ratingCell {
+    text-align: center;
+}
+
+.ratingVal, .epsSeenVal {
+    cursor: pointer;
+    color: var(--link-turquoise);
+}
+.ratingVal:hover, .epsSeenVal:hover {
+    color: var(--hover-turquoise);
+}
+
+.progressCell {
+    text-align: end;
+}
+
+input.epsSeenValEdit {
+    width: 70px;
+}
+
+.ratingCell, .progressCell, .editCell {
+    border: 1px solid var(--border-lightgray);
+}
+
+.editCell {
+    text-align: center;
+}
+
+.titleCell, thead {
+    border-bottom: 1px solid var(--border-lightgray);
+}
+
+.increaseProgress {
+    cursor: pointer;
+    color: var(--link-turquoise);
+}
+
+.increaseProgress:hover {
+    color: var(--hover-orange);
+}
+
+#menu-container {
+    background-color: var(--background-white);
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#menu-container-2 {
+    padding-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#animeOrMangaSelect {
+    border: 1px solid var(--border-lightgray);
+    border-radius: 5px;
+}
+#animeOrMangaSelect a {
+    text-align: start;
+    width: 100%;
+}
+
+#statusMenu {
+    margin-top: 10px;
+    padding-left: 0px;
+    list-style: none;
+}
+#statusMenu li {
+    padding: 10px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#statusMenu a {
+    text-decoration: none;
+    color: #fff;
+}
+#statusMenu span {
+    float: right;
+    opacity: .6;
+}
+
+#statusMenu #allAnime {
+    background-color: #5820202f;
+}
+#statusMenu #allAnime:hover {
+    background-color: #5820205f;
+}
+#statusMenu .allAnime-active { 
+    background-color: #582020 !important;
+}
+#statusMenu #watching {
+    background-color: #2b79c22f;
+}
+#statusMenu #watching:hover {
+    background-color: #2b79c25f;
+}
+.watching-active {
+    background-color: #2b79c2 !important;
+}
+#statusMenu #planning {
+    background-color: #a235b32f;
+}
+#statusMenu #planning:hover {
+    background-color: #a235b35f;
+}
+.planning-active {
+    background-color: #a235b3 !important;
+}
+#statusMenu #completed {
+    background-color: #09a7032f;
+}
+#statusMenu #completed:hover {
+    background-color: #09a7035f;
+}
+.completed-active {
+    background-color: #09a703 !important;
+}

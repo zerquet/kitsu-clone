@@ -1,0 +1,77 @@
+<div *ngIf="anime$ | async; let anime">
+    <div *ngIf="anime.coverImageBase64 !== null; else defaultCover" id="coverPhoto" style='background: url(data:image/jpeg;base64,{{anime.coverImageBase64}})'></div>
+    <ng-template #defaultCover>
+        <div id="coverPhoto" class="defaultCoverPhoto"></div>
+    </ng-template>
+    <div id="animeTabs" class="container" style="border: 1px solid red;">
+        <div id="infoBar">
+            <ul >
+                <li (click)="updateTab('summary')">Summary</li>
+                <li (click)="updateTab('episodes')">Episodes</li>
+                <li (click)="updateTab('characters')">Characters</li>
+                <li (click)="updateTab('franchise')">Franchise</li>
+            </ul>
+        </div> 
+    </div>
+    <div class="container d-flex" style="border: 1px solid blue;">
+        <div id="imgContainer" style="border: 1px solid green;">
+            <img src="data:image/jpeg;base64, {{anime.imageBase64}}" />
+            <div class="mt-2" style="border: 1px solid orange;">
+                <!--Anime not in user's library-->
+                @if(libraryEntry.status === null) {
+                    <div><input class="libraryBtn mb-1" id="completedBtn" type="button" value="Completed" (click)="setAsCompleted(anime)"/></div>
+                    <div><input class="libraryBtn mb-1" id="startedWatchingBtn" type="button" value="Started Watching" (click)="setAsStartedWatching(anime)"/></div>
+                    <div><input class="libraryBtn mb-1" id="wantToWatchBtn" type="button" value="Want to Watch" (click)="setAsWantToWatch(anime)"/></div>
+                }
+                <!--User completed anime-->
+                @else {
+                    <h6 id="editPanelHead">Edit Status</h6>
+                    <form method="post" [formGroup]="form" (submit)="saveLibraryEntryUpdates(anime)">
+                        <div class="editPanelRow">
+                            <label for="changeStatus">Status: </label>
+                            <select formControlName="status" id="rating">
+                                <option value="completed">Completed</option>
+                                <option value="watching">Watching</option>
+                                <option value="planning">Plan to Watch</option>
+                            </select>
+                        </div>
+                        <div class="editPanelRow">
+                            <label for="episodeCounter">Eps Seen: </label>
+                            <div class="mb-1">
+                                <input formControlName="episodeProgress" type="text" id="episodeCounter" min="0" [max]="anime.episodes">
+                                <span>/ {{anime.episodes}}
+                                    <span class="increaseProgress" (click)="onIncrementProgressClick(anime)"><i class="bi bi-plus-circle-fill"></i></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="editPanelRow">
+                            <label for="rating">Your Score: </label>
+                            <select formControlName="rating" id="rating">
+                                <option value="">-</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="editPanelRow">
+                            <input type="submit" value="Update" id="editPanelUpdBtn"/>
+                            <div id="editPanelDelBtnCont"><button id="editPanelDelBtn" type="button" (click)="deleteEntry(anime)"><i class="bi bi-trash3"></i></button></div>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+        <div id="tabCont"> <!--I think the actual content here should be its own component-->
+            @if(currentTab$.value === 'summary') {
+                <app-anime-summary [anime]="anime"></app-anime-summary>
+            }
+        </div>
+    </div>
+</div>

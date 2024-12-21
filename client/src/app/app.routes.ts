@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { AnimeComponent } from './anime/anime.component';
-import { AddAnimeComponent } from './add-anime/add-anime.component';
-import { UpdateAnimeComponent } from './update-anime/update-anime.component';
-import { SearchComponent } from './search/search.component';
-import { LibraryComponent } from './library/library.component';
-import { CategoryComponent } from './category/category.component';
+import { HomeComponent } from './components/home/home.component';
+import { AnimeComponent } from './components/anime/anime.component';
+import { AddAnimeComponent } from './components/admin/add-anime/add-anime.component';
+import { UpdateAnimeComponent } from './components/admin/update-anime/update-anime.component';
+import { SearchComponent } from './components/search/search.component';
+import { LibraryComponent } from './components/library/library.component';
+import { CategoryComponent } from './components/category/category.component';
 
 export const routes: Routes = [
     {path: "home", component: HomeComponent},

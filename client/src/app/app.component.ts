@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavMenuComponent } from "./nav-menu/nav-menu.component";
-import { ToastsComponent } from "./toasts/toasts.component";
+import { NavMenuComponent } from "./components/shared/nav-menu/nav-menu.component";
+import { ToastsComponent } from "./components/shared/toasts/toasts.component";
 import { AuthService } from './services/auth.service';
 
 @Component({

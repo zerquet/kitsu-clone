@@ -1,17 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --techgray: #abb4dc !important;
-    --grayonwhite: #e5e5e5;
-    --grayonwhiteBorder: #a9a9a9;
-    --grayText: #7c7c7c;
-    --grayhover: #fafafa;
-    --grayBodyBg: #f7f7f7;
-    --whiteOnGrayBg: #fff;
-    --blueLinkHover: #ad9ff3;
-    --blueLink: #674af8;
+    --background-burgundy: #402F3F !important;
+    --background-burgundy2: #332532;
+    --background-burgundy3: #241a24;
+    --background-white: #fff;
+    --text-white: #fff;
+    --text-white2: #edf0f1;
+    --hover-white: RGBA(237,240,241,1);
+    --text-gray2: #999;
+    --text-gray3: #464646;
+    --hover-gray: #fafafa;
+    --hover-gray2: #f2f2f2;
+    --background-gray: #f7f7f7;
+    --border-lightgray: #eaeaea;
+    --border-lightgray2: #e5e5e5;
+    --text-gray: #7c7c7c; 
+    --hover-orange: #f75239;
+    --hover-orange2: #f3290a;
+    --link-turquoise: #16a085;
+    --hover-turquoise: #0d5d4d;
+    --hover-turquoise2: #19b698;
 }
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: var(--grayBodyBg); }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: var(--background-gray); color: var(--text-gray3); }
 
 /*Override Material UI styles*/
 .mdc-slider__track--inactive {

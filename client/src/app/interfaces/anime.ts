@@ -4,6 +4,7 @@ export interface Anime {
     id: number;
     title: string;
     description: string;
+    status: string;
     categories: CategoryDto[] 
     image: string; //post/put
     imageBase64: string; //get
@@ -13,4 +14,12 @@ export interface Anime {
     episodes: number;
     mediaType: string;
     score: number;
+    englishTitle: string;
+    japaneseTitle: string;
+    japaneseTitleRomaji: string;
+    season: string;
+    startAirDate: Date;
+    endAirDate: Date;
+    rating: string;
+    episodeLength: number;
 }

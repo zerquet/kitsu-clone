@@ -24,10 +24,7 @@ namespace server.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id) {
             var result = await _animeService.Get(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
+            if (result == null) return NotFound();
             var model = AnimeMapper.ToAnimeDto(result, 
                 FileServerService.GetAnimeImage(result.ImageUrl!), FileServerService.GetAnimeImage(result.CoverImageId!));
             return Ok(model);
@@ -98,7 +95,7 @@ namespace server.Controllers
             }
             var newCategories = animeDto.Genres.Select(c => JsonConvert.DeserializeObject<CategoryDto>(c)).ToList();
             AnimeMapper.ToAnimeFromUpdate(animeDto, animeMatch, imageId, coverImageId);
-            _animeService.UpdateAnime(animeMatch);
+            await _animeService.UpdateAnime(animeMatch);
             await _animeService.UpdateCategories(animeMatch, newCategories.Select(c => c.Id).ToList());
             return Ok();
         }

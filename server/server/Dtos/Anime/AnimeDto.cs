@@ -16,5 +16,13 @@ namespace server.Dtos.Anime
         public int? Episodes { get; set; }
         public string? MediaType { get; set; }
         public List<string> Studios { get; set; } = [];
+        public string? EnglishTitle { get; set; }
+        public string? JapaneseTitle { get; set; }
+        public string? JapaneseTitleRomaji { get; set; }
+        public string? Season { get; set; }
+        public DateTime? StartAirDate { get; set; }
+        public DateTime? EndAirDate { get; set; }
+        public string? Rating { get; set; }
+        public int? EpisodeLength { get; set; }
     }
 }
