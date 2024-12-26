@@ -24,7 +24,7 @@ namespace server.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             //NOTE: In IdentityCore middleware, we specified to have unique emails. 
@@ -73,7 +73,7 @@ namespace server.Controllers
             }
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             try
@@ -101,7 +101,7 @@ namespace server.Controllers
         }
 
         [Authorize]
-        [HttpGet("user")]
+        [HttpGet("User")]
         public async Task<IActionResult> GetUser()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;

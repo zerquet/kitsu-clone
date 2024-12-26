@@ -6,6 +6,8 @@ import { UpdateAnimeComponent } from './components/admin/update-anime/update-ani
 import { SearchComponent } from './components/search/search.component';
 import { LibraryComponent } from './components/library/library.component';
 import { CategoryComponent } from './components/category/category.component';
+import { AddEpisodeComponent } from './components/admin/add-episode/add-episode.component';
+import { AddFranchiseComponent } from './components/admin/add-franchise/add-franchise.component';
 
 export const routes: Routes = [
     {path: "home", component: HomeComponent},
@@ -14,5 +16,7 @@ export const routes: Routes = [
     {path: "update-anime/:id", component: UpdateAnimeComponent},
     {path: "search", component: SearchComponent},
     {path: "library", component: LibraryComponent},
-    {path: "category/:category", component: CategoryComponent}
+    {path: "category/:category", component: CategoryComponent},
+    {path: "add-episode", component: AddEpisodeComponent},
+    {path: "add-franchise", component: AddFranchiseComponent},
 ];

@@ -7,7 +7,7 @@ namespace server.Services
     public interface ICategoryService
     {
         Task<Category?> GetCategoryByName(string name);
-        Task<IReadOnlyList<Category>> GetAvailableGenresAsync();
+        Task<IReadOnlyList<Category>> GetAll();
     }
     public class CategoryService : ICategoryService
     {
@@ -16,7 +16,7 @@ namespace server.Services
         {
             _context = context;
         }
-        public async Task<IReadOnlyList<Category>> GetAvailableGenresAsync()
+        public async Task<IReadOnlyList<Category>> GetAll()
         {
             return await _context.Categories.Select(x => new Category { Id = x.Id, Name = x.Name }).ToListAsync();
         }

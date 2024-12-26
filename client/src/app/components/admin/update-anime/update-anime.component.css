@@ -20,3 +20,104 @@ form {
 .fieldBox {
     width: 80%;
 }
+
+.required {
+    color: red;
+}
+
+form {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fieldName {
+    width: 20%;
+}
+
+.requiredTxtLeftPadding {
+    position: relative;
+    left: 20%;
+}
+
+.fieldBox {
+    width: 80%;
+}
+
+#matchingAnime {
+    width: 100%;
+}
+
+.dropdown {
+    position: absolute;
+    width: 400px;
+    padding: 0px 0px;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+    z-index: 9999;
+    box-sizing: border-box;
+    transition: all .3s ease;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0px 6px 12px rgba(0,0,0,.1);
+    border-radius: 3px;
+}
+
+#dropdownTitle {
+    padding: 0px 20px;
+    padding-left: 20px;
+    padding-left: 50px;
+    border-bottom: 1px solid #868686;
+
+}
+
+.scroller {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.item {
+    display: flex;
+    position: relative;
+    padding: 3px 10px;
+    text-transform: capitalize;
+    border-bottom: 1px solid #e5e5e5;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.item:hover {
+    background-color: var(--hover-gray);
+}
+
+.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.resultInfoContainer {
+    padding-left: 10px;
+}
+
+.resultInfoContainer p {
+    top: 0;
+}
+
+#deselectBtn {
+    margin-left: auto; /* Pushes the element to the right */
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#deselectBtn i {
+    font-size: 18px;
+    color: red;
+    transition: color 0.3s ease;
+}
+
+#deselectBtn i:hover {
+    color: darkred;
+}

@@ -1,0 +1,14 @@
+<div class="d-flex">
+    <table>
+        <tr>
+            <th>Episode</th>
+            <th>Title</th>
+            <th>Aired</th>
+        </tr>
+        <tr *ngFor="let episode of episodes$.value">
+            <td>{{episode.number}}</td>
+            <td>{{episode.title}}</td>
+            <td>{{episode.airDate}}</td>
+        </tr>
+    </table>
+</div>

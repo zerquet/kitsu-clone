@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { Anime } from '../interfaces/anime';
 
@@ -7,33 +7,40 @@ import { Anime } from '../interfaces/anime';
   providedIn: 'root',
 })
 export class AnimeService {
-  static url: string = 'https://localhost:7009/api/Anime';
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private readonly baseUrl = 'https://localhost:7009/api/Anime';
 
-  getAnimes() {
-    return this.http.get<Anime[]>(AnimeService.url).pipe(shareReplay(1));
-  }
-
-  getAnime(id: number) {
+  getAnimes(): Observable<Anime[]> {
     return this.http
-      .get<Anime>(`${AnimeService.url}/${id}`)
+      .get<Anime[]>(`${this.baseUrl}/GetAll`)
       .pipe(shareReplay(1));
   }
 
-  getAnimesByCategory(category: string) {
-    return this.http.get<Anime[]>(`${AnimeService.url}/category/${category}`).pipe(shareReplay(1));
+  getAnime(id: number): Observable<Anime> {
+    return this.http
+      .get<Anime>(`${this.baseUrl}/${id}`)
+      .pipe(shareReplay(1));
   }
 
-  addAnime(formData: FormData) {
-    return this.http.post<void>(AnimeService.url, formData);
+  getAnimesByCategory(category: string): Observable<Anime[]> {
+    return this.http
+      .get<Anime[]>(`${this.baseUrl}/GetByCategory/${category}`)
+      .pipe(shareReplay(1));
   }
 
-  updateAnime(formData: FormData) {
-    return this.http.put<void>(AnimeService.url, formData);
+  addAnime(data: FormData): Observable<void> {
+    return this.http
+      .post<void>(this.baseUrl, data);
   }
 
-  miniSearch(term: string) {
-    return this.http.get<Anime[]>(`${AnimeService.url}/search?term=${term}`);
+  updateAnime(data: FormData): Observable<void> {
+    return this.http
+      .put<void>(this.baseUrl, data);
+  }
+
+  miniSearch(term: string): Observable<Anime[]> {
+    return this.http
+      .get<Anime[]>(`${this.baseUrl}/MiniSearch?term=${term}`);
   }
 
   advancedSearch(
@@ -46,8 +53,8 @@ export class AnimeService {
     maxEpisodes?: string | null,
     showTv?: boolean,
     showMovie?: boolean
-  ) {
-    let queryString = '/advancedSearch?';
+  ): Observable<Anime[]> {
+    let queryString = '/AdvancedSearch?';
     queryString += `term=${term}`;
     if(minYear != null) queryString += `&minYear=${minYear}`;
     if(maxYear != null) queryString += `&maxYear=${maxYear}`;
@@ -66,6 +73,7 @@ export class AnimeService {
       queryString += mediaTypeString;
     }
 
-    return this.http.get<Anime[]>(`${AnimeService.url}${queryString}`);
+    return this.http
+      .get<Anime[]>(`${this.baseUrl}${queryString}`);
   }
 }

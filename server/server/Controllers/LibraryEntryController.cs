@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using server.Dtos.UserLibrary;
+using server.Dtos.LibraryEntry;
 using server.Mappers;
 using server.Models;
 using server.Models.Identity;
@@ -14,71 +14,74 @@ namespace server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimeLibraryEntryController : ControllerBase
+    public class LibraryEntryController : ControllerBase
     {
         private readonly IAnimeService _animeService;
         private readonly IAnimeLibraryEntryService _animeLibraryEntryService;
         private readonly UserManager<KitsuUser> _userManager;
-        public AnimeLibraryEntryController(IAnimeService animeService, UserManager<KitsuUser> userManager, IAnimeLibraryEntryService animeLibraryEntryService)
+        public LibraryEntryController(
+            IAnimeService animeService, 
+            UserManager<KitsuUser> userManager, 
+            IAnimeLibraryEntryService animeLibraryEntryService
+            )
         {
             _animeService = animeService;
             _userManager = userManager;
             _animeLibraryEntryService = animeLibraryEntryService;
-
         }
 
         [Authorize]
-        [HttpGet("getLibrary")]
-        public async Task<IActionResult> GetLibrary()
+        [HttpGet("GetAllByUser")]
+        public async Task<IActionResult> GetAllByUser()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
-            var recs = await _animeLibraryEntryService.GetLibrary(appUser.Id);
-            var dto = new List<LibraryItemDto>();
+            var libraryEntries = await _animeLibraryEntryService.GetLibrary(appUser.Id);
+            var libraryEntriesWithAnimeInfoDto = new List<LibraryEntryWithAnimeInfoDto>();
 
-            foreach (var x in recs)
+            foreach (var l in libraryEntries)
             {
-                var anime = await _animeService.Get(x.AnimeId);
+                var anime = await _animeService.Get(l.AnimeId);
                 var image = FileServerService.GetAnimeImage(anime.ImageUrl);
-                dto.Add(x.ToLibraryItemDto(anime, image));
+                libraryEntriesWithAnimeInfoDto.Add(l.ToLibraryEntryWithAnimeInfoDto(anime, image));
             }
 
-            return Ok(dto);
+            return Ok(libraryEntriesWithAnimeInfoDto);
         }
 
         [Authorize]
-        [HttpGet("getStatus/{animeId}")]
-        public async Task<IActionResult> GetStatus(int animeId)
+        [HttpGet("{animeId}")]
+        public async Task<IActionResult> Get([FromRoute] int animeId)
         {
             var anime = await _animeService.Get(animeId);
             if (anime == null) return NotFound("User not found.");
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
-            var rec = await _animeLibraryEntryService.GetStatus(appUser.Id, animeId) ?? new AnimeLibraryEntry();
-            return Ok(rec.ToAnimeLibraryEntryDto());
+            var libraryEntry = await _animeLibraryEntryService.GetStatus(appUser.Id, animeId) ?? new LibraryEntry();
+            return Ok(libraryEntry.ToLibraryEntryDto());
         }
 
         //SetStatus takes in no rating? I don't remember why I decided on this? Need to think
         [Authorize]
-        [HttpPost("setStatus")]
-        public async Task<IActionResult> SetStatus(SetStatusDto dto)
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CreateLibraryItemDto request)
         {
-            var anime = await _animeService.Get(dto.AnimeId);
+            var anime = await _animeService.Get(request.AnimeId);
             if (anime == null) return NotFound();
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
-            var rec = new AnimeLibraryEntry
+            var libraryEntry = new LibraryEntry
             {
-                AnimeId = dto.AnimeId,
+                AnimeId = request.AnimeId,
                 KitsuUserId = appUser.Id,
-                Status = dto.Status,
-                EpisodesSeen = dto.EpisodesSeen
+                WatchStatus = request.WatchStatus,
+                EpisodesWatched = request.EpisodesWatched
             };
 
             try
             {
-                await _animeLibraryEntryService.SetStatus(rec);
-                return CreatedAtAction(nameof(GetStatus), new { animeId = rec.AnimeId }, rec.ToAnimeLibraryEntryDto()); //return Id by calling a get route/action?
+                await _animeLibraryEntryService.SetStatus(libraryEntry);
+                return CreatedAtAction(nameof(Get), new { animeId = libraryEntry.AnimeId }, libraryEntry.ToLibraryEntryDto()); //return Id by calling a get route/action?
 
                 //createdAtAction (pass in ACTION name, so name of the action method itself
                 //  like nameOf(GetItem) in Task<List<X>> GetItem(int id) {}
@@ -92,27 +95,27 @@ namespace server.Controllers
         }
 
         [Authorize]
-        [HttpPut("editStatus")]
-        public async Task<IActionResult> EditStatus(EditStatusDto dto)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] UpdateLibraryEntryDto request)
         {
             //get library record by id? or by where condition (user and anime ids) and confirm only 1 is returned?
-            var match = await _animeLibraryEntryService.GetStatusById(dto.Id);
-            if (match == null) return NotFound();
-            dto.ToAnimeLibraryEntryFromEdit(match);
+            var libraryEntryMatch = await _animeLibraryEntryService.GetStatusById(request.Id);
+            if (libraryEntryMatch == null) return NotFound();
+            request.ToLibraryEntryFromUpdate(libraryEntryMatch);
             await _animeLibraryEntryService.SaveChanges();
-            return Ok(match.ToAnimeLibraryEntryDto());
+            return Ok(libraryEntryMatch.ToLibraryEntryDto());
         }
 
         [Authorize]
-        [HttpDelete("deleteStatus/{animeId}")]
-        public async Task<IActionResult> DeleteStatus(int animeId)
+        [HttpDelete("{animeId}")]
+        public async Task<IActionResult> Delete([FromRoute] int animeId)
         {
             var anime = await _animeService.Get(animeId);
             if (anime == null) return NotFound();
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
             await _animeLibraryEntryService.DeleteStatus(appUser.Id, animeId);
-            return Ok(new AnimeLibraryEntryDto());
+            return Ok(new LibraryEntryDto());
         }
 
     }

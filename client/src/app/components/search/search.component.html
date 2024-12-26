@@ -1,5 +1,5 @@
 <div class="container d-flex">
-    <div id="filters" style="border: 1px solid red;">
+    <div id="filters">
         <div id="yearFilter" class="mt-3">
             <div class="d-flex justify-content-between"><label for="year">Year</label><small>{{minYear}} - {{maxYear}}</small></div>
             <div>
@@ -44,7 +44,7 @@
               </fieldset>
         </div>
     </div>
-    <div id="searchMain" style="border: 1px solid blue;">
+    <div id="searchMain">
         <div class="col-sm-12">
             <form [formGroup]="form"><input class="ps-3 py-3" id="searchInput" type="text" placeholder="Search by title..." formControlName="searchControl" /></form>
         </div>

@@ -15,21 +15,20 @@ namespace server.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<IActionResult> Get(string name) 
+        public async Task<IActionResult> Get([FromRoute] string name) 
         {
             if (string.IsNullOrEmpty(name)) return BadRequest();
-            var result = await _categoryService.GetCategoryByName(name);
-            if (result == null) return NotFound();
-            return Ok(result.ToCategoryDto());
+            var category = await _categoryService.GetCategoryByName(name);
+            if (category == null) return NotFound();
+            return Ok(category.ToCategoryDto());
         }
 
-        //Authorize?
-        [HttpGet("getAvailable")]
-        public async Task<IActionResult> GetAvailableCategories()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
-            var results = await _categoryService.GetAvailableGenresAsync();
-            var model = results.Select(cat => cat.ToCategoryDto()).ToList();
-            return Ok(model);
+            var categories = await _categoryService.GetAll();
+            var categoriesDto = categories.Select(c => c.ToCategoryDto()).ToList();
+            return Ok(categoriesDto);
         }
     }
 }

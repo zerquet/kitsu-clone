@@ -3,7 +3,7 @@
     <ng-template #defaultCover>
         <div id="coverPhoto" class="defaultCoverPhoto"></div>
     </ng-template>
-    <div id="animeTabs" class="container" style="border: 1px solid red;">
+    <div id="animeTabs" class="container">
         <div id="infoBar">
             <ul >
                 <li (click)="updateTab('summary')">Summary</li>
@@ -13,12 +13,12 @@
             </ul>
         </div> 
     </div>
-    <div class="container d-flex" style="border: 1px solid blue;">
-        <div id="imgContainer" style="border: 1px solid green;">
+    <div class="container d-flex">
+        <div id="imgContainer">
             <img src="data:image/jpeg;base64, {{anime.imageBase64}}" />
-            <div class="mt-2" style="border: 1px solid orange;">
+            <div class="mt-2">
                 <!--Anime not in user's library-->
-                @if(libraryEntry.status === null) {
+                @if(libraryEntry.watchStatus === null) {
                     <div><input class="libraryBtn mb-1" id="completedBtn" type="button" value="Completed" (click)="setAsCompleted(anime)"/></div>
                     <div><input class="libraryBtn mb-1" id="startedWatchingBtn" type="button" value="Started Watching" (click)="setAsStartedWatching(anime)"/></div>
                     <div><input class="libraryBtn mb-1" id="wantToWatchBtn" type="button" value="Want to Watch" (click)="setAsWantToWatch(anime)"/></div>
@@ -38,8 +38,8 @@
                         <div class="editPanelRow">
                             <label for="episodeCounter">Eps Seen: </label>
                             <div class="mb-1">
-                                <input formControlName="episodeProgress" type="text" id="episodeCounter" min="0" [max]="anime.episodes">
-                                <span>/ {{anime.episodes}}
+                                <input formControlName="episodeProgress" type="text" id="episodeCounter" min="0" [max]="anime.episodeCount">
+                                <span>/ {{anime.episodeCount}}
                                     <span class="increaseProgress" (click)="onIncrementProgressClick(anime)"><i class="bi bi-plus-circle-fill"></i></span>
                                 </span>
                             </div>
@@ -71,6 +71,9 @@
         <div id="tabCont"> <!--I think the actual content here should be its own component-->
             @if(currentTab$.value === 'summary') {
                 <app-anime-summary [anime]="anime"></app-anime-summary>
+            }
+            @else if(currentTab$.value === 'episodes') {
+                <app-anime-episodes [id]="anime.id"></app-anime-episodes>
             }
         </div>
     </div>

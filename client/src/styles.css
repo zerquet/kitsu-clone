@@ -6,7 +6,7 @@
     --background-white: #fff;
     --text-white: #fff;
     --text-white2: #edf0f1;
-    --hover-white: RGBA(237,240,241,1);
+    --hover-white: RGBA(237, 240, 241, 1);
     --text-gray2: #999;
     --text-gray3: #464646;
     --hover-gray: #fafafa;
@@ -14,15 +14,29 @@
     --background-gray: #f7f7f7;
     --border-lightgray: #eaeaea;
     --border-lightgray2: #e5e5e5;
-    --text-gray: #7c7c7c; 
+    --text-gray: #7c7c7c;
     --hover-orange: #f75239;
     --hover-orange2: #f3290a;
     --link-turquoise: #16a085;
     --hover-turquoise: #0d5d4d;
     --hover-turquoise2: #19b698;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: var(--background-gray); color: var(--text-gray3); }
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: var(--background-gray);
+    color: var(--text-gray3);
+}
+
+/* * {
+    box-sizing: border-box;
+    outline: 1px solid limegreen !important;
+} */
 
 /*Override Material UI styles*/
 .mdc-slider__track--inactive {

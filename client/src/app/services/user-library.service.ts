@@ -1,45 +1,57 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AnimeLibraryEntry } from '../interfaces/animeLibraryEntry';
-import { LibraryItemDto } from '../interfaces/libraryItemDto';
+import { inject, Injectable } from '@angular/core';
+import { LibraryEntry } from '../interfaces/libraryEntry';
+import { LibraryEntryWithAnimeInfo } from '../interfaces/libraryEntryWithAnimeInfo';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserLibraryService {
-  static url: string = "https://localhost:7009/api/AnimeLibraryEntry";
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  private readonly baseUrl = "https://localhost:7009/api/LibraryEntry";
   
-  getStatus(animeId: number) {
-    return this.http.get<AnimeLibraryEntry>(`${UserLibraryService.url}/getStatus/${animeId}`);
+  getLibraryEntry(animeId: number): Observable<LibraryEntry> {
+    return this.http
+      .get<LibraryEntry>(`${this.baseUrl}/${animeId}`);
   }
 
-  getLibrary() {
-    return this.http.get<LibraryItemDto[]>(`${UserLibraryService.url}/getLibrary`);
+  getLibrary(): Observable<LibraryEntryWithAnimeInfo[]> {
+    return this.http
+      .get<LibraryEntryWithAnimeInfo[]>(`${this.baseUrl}/GetAllByUser`);
   }
 
-  setStatus(animeId: number, status: string, episodesSeen: number) {
-    return this.http.post<AnimeLibraryEntry>(`${UserLibraryService.url}/setStatus`, 
-      {
-        AnimeId: animeId,
-        Status: status,
-        EpisodesSeen: episodesSeen
-      });
+  createLibraryEntry(animeId: number, status: string, episodesWatched: number): Observable<LibraryEntry> {
+    return this.http
+      .post<LibraryEntry>(`${this.baseUrl}`, 
+        {
+          AnimeId: animeId,
+          WatchStatus: status,
+          EpisodesWatched: episodesWatched
+        });
   }
 
-  editStatus(id: number, animeId: number, status: string, episodesSeen: number, rating: number) {
-    return this.http.put<AnimeLibraryEntry>(`${UserLibraryService.url}/editStatus`, 
-      {
-        Id: id,
-        AnimeId: animeId,
-        Status: status,
-        EpisodesSeen: episodesSeen,
-        Rating: rating
-      });
+  updateLibraryEntry( //why not pass a dto or object? Inconsistency across codebase.
+    libraryEntryId: number, 
+    animeId: number, 
+    status: string, 
+    episodesWatched: number, 
+    rating: number
+  ): Observable<LibraryEntry> {
+    return this.http
+      .put<LibraryEntry>(`${this.baseUrl}`, 
+        {
+          Id: libraryEntryId,
+          AnimeId: animeId,
+          WatchStatus: status,
+          EpisodesWatched: episodesWatched,
+          UserRating: rating
+        });
   }
 
-  deleteStatus(animeId: number) {
-    return this.http.delete<AnimeLibraryEntry>(`${UserLibraryService.url}/deleteStatus/${animeId}`);
+  deleteLibraryEntry(animeId: number): Observable<LibraryEntry> {
+    return this.http
+      .delete<LibraryEntry>(`${this.baseUrl}/${animeId}`);
   }
 
 }

@@ -33,18 +33,31 @@ namespace server.Data
             modelBuilder.Entity<KitsuUser>()
                 .HasMany(ku => ku.Animes)
                 .WithMany(a => a.KitsuUsers)
-                .UsingEntity<AnimeLibraryEntry>();
+                .UsingEntity<LibraryEntry>();
 
             modelBuilder.Entity<Anime>()
                 .HasMany(a => a.Categories)
                 .WithMany(c => c.Animes)
                 .UsingEntity<AnimeCategory>()
                 .ToTable("AnimeCategory"); //Telling EF Core that "AnimeCategories" here is "AnimeCategory" in the db.
+
+            modelBuilder.Entity<Anime>()
+                .HasOne(a => a.Franchise)
+                .WithMany(f => f.Animes);
+
+            modelBuilder.Entity<Anime>()
+                .HasMany(a => a.EpisodeList)
+                .WithOne(e => e.Anime);
+
+            modelBuilder.Entity<Episode>().ToTable("Episode");
+            modelBuilder.Entity<Franchise>().ToTable("Franchise");
         }
 
         public DbSet<Anime> Animes => Set<Anime>(); 
-        public DbSet<AnimeLibraryEntry> AnimeLibraryEntries => Set<AnimeLibraryEntry>();
+        public DbSet<LibraryEntry> LibraryEntries => Set<LibraryEntry>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<AnimeCategory> AnimeCategories => Set<AnimeCategory>();
+        public DbSet<Franchise> Franchises => Set<Franchise>();
+        public DbSet<Episode> Episodes => Set<Episode>();
     }
 }

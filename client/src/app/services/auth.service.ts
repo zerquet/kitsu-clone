@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { LoggedInUser } from '../interfaces/loggedInUser';
+import { inject, Injectable, signal } from '@angular/core';
+import { User } from '../interfaces/user';
 import { LoginDto } from '../interfaces/loginDto';
 import { Observable } from 'rxjs';
 
@@ -8,15 +8,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  static url: string = "https://localhost:7009/api/Account";
-  currentUserSig = signal<LoggedInUser | undefined | null>(undefined);
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  private readonly baseUrl = "https://localhost:7009/api/Account";
+  currentUserSig = signal<User | undefined | null>(undefined);
 
-  login(loginDto: LoginDto): Observable<LoggedInUser> {
-    return this.http.post<LoggedInUser>(`${AuthService.url}/login`, loginDto);
+  login(request: LoginDto): Observable<User> {
+    return this.http
+      .post<User>(`${this.baseUrl}/login`, request);
   }
 
-  getUser() {
-    return this.http.get<LoggedInUser>(`${AuthService.url}/user`);
+  getUser(): Observable<User> {
+    return this.http
+      .get<User>(`${this.baseUrl}/user`);
   }
 }

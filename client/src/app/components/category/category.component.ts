@@ -6,7 +6,7 @@ import { Anime } from '../../interfaces/anime';
 import { AnimeService } from '../../services/anime.service';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { CategoryService } from '../../services/category.service';
-import { CategoryDto } from '../../interfaces/categoryDto';
+import { Category } from '../../interfaces/category';
 
 @Component({
   selector: 'app-category',
@@ -30,7 +30,7 @@ export class CategoryComponent {
   showCardTitle = 0;
   list: Anime[] = [];
   shown = false;
-  currCategory$ = new BehaviorSubject<CategoryDto | undefined>(undefined);
+  currCategory$ = new BehaviorSubject<Category | undefined>(undefined);
 
   ngOnInit(): void {
     this.form.controls['searchControl'].valueChanges

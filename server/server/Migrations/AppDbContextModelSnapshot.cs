@@ -51,13 +51,13 @@ namespace server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0470ca54-ef5e-4114-ae11-422c340678de",
+                            Id = "a7895c7b-84f2-4d71-87d9-1fd0466cbfe5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8ee56fc4-c834-499a-a6af-ba8641c34e11",
+                            Id = "f01825bf-c061-4b58-ac68-5da685bcb6b5",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -183,16 +183,19 @@ namespace server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndAirDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("EndAirDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("EnglishTitle")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("EpisodeCount")
+                        .HasColumnType("int");
+
                     b.Property<int?>("EpisodeLength")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Episodes")
+                    b.Property<int?>("FranchiseId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
@@ -207,7 +210,7 @@ namespace server.Migrations
                     b.Property<string>("MediaType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Rating")
+                    b.Property<string>("ReleaseStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Score")
@@ -216,11 +219,8 @@ namespace server.Migrations
                     b.Property<string>("Season")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("StartAirDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly?>("StartAirDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Studios")
                         .IsRequired()
@@ -230,10 +230,15 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TvRating")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FranchiseId");
 
                     b.ToTable("Animes");
                 });
@@ -261,39 +266,6 @@ namespace server.Migrations
                     b.ToTable("AnimeCategory", (string)null);
                 });
 
-            modelBuilder.Entity("server.Models.AnimeLibraryEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnimeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EpisodesSeen")
-                        .HasColumnType("int");
-
-                    b.Property<string>("KitsuUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.HasIndex("KitsuUserId");
-
-                    b.ToTable("AnimeLibraryEntries");
-                });
-
             modelBuilder.Entity("server.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -311,6 +283,55 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("server.Models.Episode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly?>("AirDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JapaneseTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimeId");
+
+                    b.ToTable("Episode", (string)null);
+                });
+
+            modelBuilder.Entity("server.Models.Franchise", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Franchise", (string)null);
                 });
 
             modelBuilder.Entity("server.Models.Identity.KitsuUser", b =>
@@ -378,6 +399,39 @@ namespace server.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("server.Models.LibraryEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EpisodesWatched")
+                        .HasColumnType("int");
+
+                    b.Property<string>("KitsuUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("UserRating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WatchStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimeId");
+
+                    b.HasIndex("KitsuUserId");
+
+                    b.ToTable("LibraryEntries");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -429,6 +483,15 @@ namespace server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("server.Models.Anime", b =>
+                {
+                    b.HasOne("server.Models.Franchise", "Franchise")
+                        .WithMany("Animes")
+                        .HasForeignKey("FranchiseId");
+
+                    b.Navigation("Franchise");
+                });
+
             modelBuilder.Entity("server.Models.AnimeCategory", b =>
                 {
                     b.HasOne("server.Models.Anime", "Anime")
@@ -448,7 +511,18 @@ namespace server.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("server.Models.AnimeLibraryEntry", b =>
+            modelBuilder.Entity("server.Models.Episode", b =>
+                {
+                    b.HasOne("server.Models.Anime", "Anime")
+                        .WithMany("EpisodeList")
+                        .HasForeignKey("AnimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
+                });
+
+            modelBuilder.Entity("server.Models.LibraryEntry", b =>
                 {
                     b.HasOne("server.Models.Anime", "Anime")
                         .WithMany("AnimeLibraryEntries")
@@ -472,11 +546,18 @@ namespace server.Migrations
                     b.Navigation("AnimeCategories");
 
                     b.Navigation("AnimeLibraryEntries");
+
+                    b.Navigation("EpisodeList");
                 });
 
             modelBuilder.Entity("server.Models.Category", b =>
                 {
                     b.Navigation("AnimeCategories");
+                });
+
+            modelBuilder.Entity("server.Models.Franchise", b =>
+                {
+                    b.Navigation("Animes");
                 });
 
             modelBuilder.Entity("server.Models.Identity.KitsuUser", b =>

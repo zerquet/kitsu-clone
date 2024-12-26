@@ -15,7 +15,7 @@ namespace server.Services
         Task<List<Anime>> MiniSearch(string term);
         Task<List<Anime>> AdvancedSearch(
             string? term, int? minYear, int? maxYear, int? minEpisodes, int? maxEpisodes, int? minRating, int? maxRating, string[]? mediaType);
-        Task AddCategories(List<string> categories, int animeId);
+        Task AddCategories(List<int> categories, int animeId);
         Task UpdateCategories(Anime anime, List<int> newCategories);
     }
     public class AnimeService(AppDbContext context) : IAnimeService
@@ -24,7 +24,7 @@ namespace server.Services
 
         public async Task<Anime?> Get(int id)
         {
-            return await _context.Animes.Include(a => a.Categories).SingleOrDefaultAsync(a => a.Id == id);
+            return await _context.Animes.Include(a => a.Categories).Include(a => a.Franchise).SingleOrDefaultAsync(a => a.Id == id);
         }
         public async Task<List<Anime>> GetAll()
         {
@@ -75,7 +75,7 @@ namespace server.Services
                 .Where(a => 
                     (term == null || a.Title.Contains(term)) &&
                     ((a.Year >= minYear || minYear == null) && (a.Year <= maxYear || maxYear == null)) &&
-                    ((a.Episodes >= minEpisodes || minEpisodes == null) && (a.Episodes <= maxEpisodes || maxEpisodes == null)) && 
+                    ((a.EpisodeCount >= minEpisodes || minEpisodes == null) && (a.EpisodeCount <= maxEpisodes || maxEpisodes == null)) && 
                     ((a.Score >= minRating || minRating == null) && (a.Score <= maxRating || maxRating == null)) && 
                     (mediaType == null || mediaType.Contains(a.MediaType))
                     )
@@ -88,9 +88,9 @@ namespace server.Services
                 .ToListAsync();
         }
 
-        public async Task AddCategories(List<string> categories, int animeId)
+        public async Task AddCategories(List<int> categories, int animeId)
         {
-            var results = await _context.Categories.Where(x => categories.Contains(x.Name)).ToListAsync();
+            var results = await _context.Categories.Where(x => categories.Contains(x.Id)).ToListAsync(); //wtf, use id?
             foreach (var category in results) 
             {
                 var newInstance = new AnimeCategory
@@ -108,7 +108,8 @@ namespace server.Services
             //#Todo: See if this can be optimized. 
             //remove categories from Anime not in update list
             //ToList() may seem redundant, but it's not allowed to iterate the same list we are modifying 
-            foreach (var existingCategory in anime.Categories.ToList())
+            var currentCateogies = anime.Categories.ToList();
+            foreach (var existingCategory in currentCateogies)
             {
                 if(!newCategories.Contains(existingCategory.Id))
                 {

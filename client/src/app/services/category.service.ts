@@ -1,19 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { CategoryDto } from '../interfaces/categoryDto';
+import { inject, Injectable } from '@angular/core';
+import { Category } from '../interfaces/category';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
-  static url = "https://localhost:7009/api/Category"
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  private readonly baseUrl = 'https://localhost:7009/api/Category';
 
-  getCategory(name: string) {
-    return this.http.get<CategoryDto>(`${CategoryService.url}/${name}`);
+  getCategory(name: string): Observable<Category> {
+    return this.http
+      .get<Category>(`${this.baseUrl}/${name}`);
   }
 
-  getAvailableCategories() {
-    return this.http.get<CategoryDto[]>(`${CategoryService.url}/getAvailable`);
+  getAvailableCategories(): Observable<Category[]> {
+    return this.http
+      .get<Category[]>(`${this.baseUrl}/GetAll`);
   }
 }

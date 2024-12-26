@@ -5,6 +5,7 @@ namespace server.Mappers
 {
     public static class AnimeMapper
     {
+        //Does the 'this' make any sense here? It's not used an extension method.
         public static AnimeDto ToAnimeDto(this Anime animeModel, string? imageBase64, string? coverImageBase64)
         {
             return new AnimeDto
@@ -14,10 +15,10 @@ namespace server.Mappers
                 Description = animeModel.Description,
                 Score = animeModel.Score,
                 Categories = animeModel.Categories.Select(x => x.ToCategoryDto()).ToList(),
-                Status = animeModel.Status,
+                ReleaseStatus = animeModel.ReleaseStatus,
                 ImageBase64 = imageBase64,
                 Year = animeModel.Year,
-                Episodes = animeModel.Episodes,
+                EpisodeCount = animeModel.EpisodeCount,
                 MediaType = animeModel.MediaType,
                 Studios = animeModel.Studios,
                 CoverImageBase64 = coverImageBase64,
@@ -27,8 +28,10 @@ namespace server.Mappers
                 Season = animeModel.Season,
                 StartAirDate = animeModel.StartAirDate,
                 EndAirDate = animeModel.EndAirDate,
-                Rating = animeModel.Rating,
-                EpisodeLength = animeModel.EpisodeLength
+                TvRating = animeModel.TvRating,
+                EpisodeLength = animeModel.EpisodeLength,
+                FranchiseId = animeModel.FranchiseId,
+                FranchiseName = animeModel.Franchise?.Name
             };
         }
         public static Anime ToAnimeFromCreate(this CreateAnimeDto anime, string? imageId, string? coverImageId)
@@ -36,15 +39,24 @@ namespace server.Mappers
             return new Anime
             {
                 Title = anime.Title,
-                Description = anime.Description == "null" ? null : anime.Description,
+                Description = anime.Description = anime.Description,
                 Score = anime.Score,
-                Status = anime.Status,
+                ReleaseStatus = anime.Status,
                 ImageUrl = imageId,
                 Year = anime.Year,
-                Episodes = anime.Episodes,
+                EpisodeCount = anime.EpisodeCount,
                 MediaType = anime.MediaType,
                 Studios= anime.Studios,
-                CoverImageId = coverImageId
+                CoverImageId = coverImageId,
+                EnglishTitle = anime.EnglishTitle,
+                JapaneseTitle = anime.JapaneseTitle,
+                JapaneseTitleRomaji = anime.JapaneseTitleRomaji,
+                Season = anime.Season,
+                StartAirDate = anime.StartAirDate,
+                EndAirDate = anime.EndAirDate,
+                TvRating = anime.TvRating,
+                EpisodeLength = anime.EpisodeLength,
+                FranchiseId = anime.FranchiseId,
             };
         }
 
@@ -54,10 +66,10 @@ namespace server.Mappers
             anime.Title = animeDto.Title;
             anime.Description = animeDto.Description;
             anime.Score = animeDto.Score;
-            anime.Status = animeDto.Status;
+            anime.ReleaseStatus = animeDto.ReleaseStatus;
             anime.ImageUrl = imageId ?? anime.ImageUrl;
             anime.Year = animeDto.Year;
-            anime.Episodes = animeDto.Episodes;
+            anime.EpisodeCount = animeDto.EpisodeCount;
             anime.CoverImageId = coverImageId ?? anime.CoverImageId;
             anime.Studios = animeDto.Studios;
             anime.MediaType = animeDto.MediaType;
@@ -67,8 +79,9 @@ namespace server.Mappers
             anime.Season = animeDto.Season;
             anime.StartAirDate = animeDto.StartAirDate;
             anime.EndAirDate = animeDto.EndAirDate;
-            anime.Rating = animeDto.Rating;
+            anime.TvRating = animeDto.TvRating;
             anime.EpisodeLength = animeDto.EpisodeLength;
+            anime.FranchiseId = animeDto.FranchiseId;
         }
     }
 }

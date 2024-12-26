@@ -18,7 +18,7 @@
             <div class="flex">
                 <div><label for="progress">Progress</label></div>
                 <div>
-                    <input formControlName="progress" type="number" id="progress" [max]="libraryEntry.value.animeTotalEpisodes" min="0" [value]="libraryEntry.value.episodesSeen">
+                    <input formControlName="progress" type="number" id="progress" [max]="libraryEntry.value.animeTotalEpisodes" min="0" [value]="libraryEntry.value.episodesWatched">
                     <span> of {{libraryEntry.value.animeTotalEpisodes}} episodes</span>
                 </div>
             </div>

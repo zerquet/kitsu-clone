@@ -49,12 +49,12 @@
 
         <div class="mt-2">
             <div class="fieldName d-inline-block align-top">
-                <label for="genres">Genres </label><br>
-                <button type="button" (click)="clearGenres()">Clear</button>
+                <label for="genres">Categories </label><br>
+                <button type="button" (click)="clearCategories()">Clear</button>
             </div>
-            <select id="genres" formControlName="genres" multiple class="fieldBox">
-                @for (cat of availableCategories$.value; track $index) {
-                    <option [value]="cat.name">{{cat.name}}</option>
+            <select *ngIf="availableCategories$ | async; let categories" id="genres" formControlName="categories" multiple class="fieldBox">
+                @for (cat of categories; track $index) {
+                    <option [value]="cat.id">{{cat.name}}</option>
                 }
             </select>
         </div>
@@ -133,6 +133,38 @@
             <label for="episodeLength" class="fieldName">Episode Length (min)</label>
             <input id="episodeLength" type="number" formControlName="episodeLength" class="fieldBox">
         </div>
+
+        <input type="hidden" formControlName="franchiseId" />
+        <div class="mt-2 d-flex">
+            <label class="fieldName">Current Franchise: </label>
+            <div class="fieldBox">{{currentFranchise}}</div>
+        </div>
+
+        <div class="mt-2 d-flex">
+            <label for="franchise" class="fieldName">Franchise</label>
+            <div class="fieldBox">
+                <input id="franchise" type="text" formControlName="franchiseSearch">
+                <div class="dropdown" [ngClass]="{'open':shown && searchResults !== undefined && searchResults.length !== 0}">
+                    <div class="scroller">
+                        @for (item of searchResults; track item.id) {
+                            <div class="item">
+                                <div class="resultInfoContainer"><p (click)="selectFranchise(item)">{{item.name}}</p></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @if (selectedFranchise$.value !== null) {
+            <div class="mt-2 d-flex">
+                <span class="fieldName">Selected Franchise</span>
+                <div class="fieldBox">
+                        <div id="selectedAnimeTitleCont"><span>{{selectedFranchise$.value.name}}</span></div>
+                        <div id="deselectBtn"><i (click)="deselectAnime()" class="bi bi-x-circle"></i></div>
+                </div>
+            </div>
+        }
     
         <div class="text-center mt-2">
             <button type="submit" [disabled]="!form.valid">Update Anime</button>

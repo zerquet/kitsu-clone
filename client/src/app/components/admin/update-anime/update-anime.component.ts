@@ -1,13 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AnimeService } from '../../../services/anime.service';
 import { AppToastService } from '../../../services/app-toast.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged, mergeMap, Observable } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { Anime } from '../../../interfaces/anime';
 import { CategoryService } from '../../../services/category.service';
-import { CategoryDto } from '../../../interfaces/categoryDto';
+import { Category } from '../../../interfaces/category';
+import { Franchise } from '../../../interfaces/franchise';
+import { FranchiseService } from '../../../services/franchise.service';
+import { Utils } from '../../../utils';
 
 @Component({
   selector: 'app-update-anime',
@@ -16,107 +19,117 @@ import { CategoryDto } from '../../../interfaces/categoryDto';
   templateUrl: './update-anime.component.html',
   styleUrl: './update-anime.component.css'
 })
-export class UpdateAnimeComponent {
-  categoryService = inject(CategoryService);
-  availableCategories$ = new BehaviorSubject<CategoryDto[]>([]);
-  form: FormGroup;
-  id: string = "";
+export class UpdateAnimeComponent implements OnInit {
+  private toastService = inject(AppToastService);
+  private animeService = inject(AnimeService);
+  private franchiseService = inject(FranchiseService);
+  private categoryService = inject(CategoryService);
+  private route = inject(ActivatedRoute);
+  availableCategories$: Observable<Category[]> = this.categoryService.getAvailableCategories();
+  selectedFranchise$ = new BehaviorSubject<Franchise | null>(null);
+  form = new FormGroup({
+    title: new FormControl('', Validators.required),
+    description: new FormControl(),
+    image: new FormControl(),
+    coverImage: new FormControl(),
+    status: new FormControl(),
+    categories: new FormControl(),
+    episodes: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
+    year: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
+    mediaType: new FormControl(),
+    score: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
+    englishTitle: new FormControl(),
+    japaneseTitle: new FormControl(),
+    japaneseRomaji: new FormControl(),
+    season: new FormControl(),
+    startAirDate: new FormControl(),
+    endAirDate: new FormControl(),
+    rating: new FormControl(),
+    episodeLength: new FormControl(),
+    franchiseSearch: new FormControl(),
+    franchiseId: new FormControl()
+  });
+  currentAnimeId: string = "";
+  searchResults: Franchise[] = [];
+  shown = false;
+  currentFranchise: string | null = "";
 
-  constructor(private animeService: AnimeService, private toastService: AppToastService, private route: ActivatedRoute) {
-    this.form = new FormGroup({
-      title: new FormControl('', Validators.required),
-      description: new FormControl(),
-      image: new FormControl(),
-      coverImage: new FormControl(),
-      status: new FormControl(),
-      genres: new FormControl(),
-      episodes: new FormControl('', Validators.pattern("[0-9]*")),
-      year: new FormControl('', Validators.pattern("[0-9]*")),
-      mediaType: new FormControl(),
-      score: new FormControl('', Validators.pattern("[0-9]*")),
-      englishTitle: new FormControl(''),
-      japaneseTitle: new FormControl(''),
-      japaneseRomaji: new FormControl(''),
-      season: new FormControl(''),
-      startAirDate: new FormControl(),
-      endAirDate: new FormControl(),
-      rating: new FormControl(''),
-      episodeLength: new FormControl(0)
-    });
-    this.categoryService.getAvailableCategories().subscribe(res => {
-      this.availableCategories$.next(res);
-    })
-    this.route.params.pipe(
-      distinctUntilChanged(),
-      mergeMap(params => this.animeService.getAnime(params['id']))
-    ).subscribe(anime => {
-      this.id = anime.id.toString();
-      this.form.patchValue({
-        title: anime.title,
-        description: anime.description,
-        status: anime.status,
-        genres: anime.categories.map(x => x.name),
-        episodes: anime.episodes,
-        year: anime.year,
-        mediaType: anime.mediaType,
-        score: anime.score,
-        englishTitle: anime.englishTitle,
-        japaneseTitle: anime.japaneseTitle,
-        japaneseRomaji: anime.japaneseTitleRomaji,
-        season: anime.season,
-        startAirDate: anime.startAirDate === null ? null : new Date(anime.startAirDate).toISOString().split('T')[0],
-        endAirDate: anime.endAirDate === null ? null : new Date(anime.endAirDate).toISOString().split('T')[0],
-        rating: anime.rating !== "null" ? anime.rating : null,
-        episodeLength: anime.episodeLength
-      });
-    })
-    
+  ngOnInit() {
+    this.route.params
+      .pipe(
+        distinctUntilChanged(),
+        mergeMap(params => this.animeService.getAnime(params['id'])))
+      .subscribe(res => {
+        this.currentAnimeId = res.id.toString();
+        this.prefillform(res);
+        this.currentFranchise = res.franchiseName;
+      })
+
+    this.form.controls['franchiseSearch'].valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        tap(value => {
+          if (!value || value.trim().length === 0) {
+            // Directly clear results if input is empty or whitespace
+            this.searchResults = [];
+            this.shown = false;
+          }
+        }),
+        filter(term => term && term.trim().length > 2),
+        switchMap(term => {
+          if(term && term.trim().length > 2)
+            return this.franchiseService.getFranchises(term)
+          else 
+            return of([]);
+        }))
+      .subscribe(res => {
+        this.searchResults = res;
+        this.shown = res.length > 0 ? true : false;
+      }); 
   }
 
   onSubmit() {
-    const formData = new FormData();
-    formData.append('id', this.id);
-    formData.append('title', this.title?.value!);
-    formData.append('description', this.description?.value!); 
-    formData.append('image', this.image?.value);
-    formData.append('coverImage', this.coverImage?.value);
-    formData.append('year', this.year?.value);
-    formData.append('episodes', this.episodes?.value);
-    formData.append('mediaType', this.mediaType?.value);
-    formData.append('score', this.score?.value);
-    formData.append('status', this.status?.value);
-    if (this.genres?.value != null) {
-      for(let i = 0; i < this.genres?.value.length; i++) {
-        let catName = this.genres?.value[i];
-        let catObj: CategoryDto = {
-          name: catName, 
-          id: this.availableCategories$.value.find(c => c.name === catName)?.id!, 
-          description: ""
-        }
-        formData.append('genres', JSON.stringify(catObj))
+    const data = new FormData();
+    data.append('id', this.currentAnimeId);
+    data.append('title', this.title!.value!);
+    if(!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description?.value); 
+    if(!Utils.IsNullOrUndefined(this.image!.value)) data.append('image', this.image!.value);
+    if(!Utils.IsNullOrUndefined(this.coverImage!.value)) data.append('coverImage', this.coverImage!.value);
+    if(!Utils.IsNullOrUndefined(this.year!.value)) data.append('year', this.year!.value!.toString()!);
+    if(!Utils.IsNullOrUndefined(this.episodes!.value)) data.append('episodeCount', this.episodes!.value!.toString()!);
+    if(!Utils.IsNullOrUndefined(this.mediaType!.value)) data.append('mediaType', this.mediaType!.value);
+    if(!Utils.IsNullOrUndefined(this.score!.value)) data.append('score', this.score!.value!.toString()!);
+    if(!Utils.IsNullOrUndefined(this.status!.value)) data.append('releaseStatus', this.status!.value);
+    if (!Utils.IsNullOrUndefined(this.categories!.value)) {
+      for(let i = 0; i < this.categories!.value.length; i++) {
+        data.append('categories', this.categories!.value[i])
       }
     }
-    formData.append('englishTitle', this.englishTitle?.value);
-    formData.append('japaneseTitle', this.japaneseTitle?.value);
-    formData.append('japaneseTitleRomaji', this.japaneseRomaji?.value);
-    formData.append('season', this.season?.value);
-    if(this.startAirDate?.value !== undefined)
-      formData.append('startAirDate', this.startAirDate?.value);
-    if(this.endAirDate?.value !== undefined)
-      formData.append('endAirDate', this.endAirDate?.value);
-    formData.append('rating', this.rating?.value);
-    formData.append('episodeLength', this.episodeLength?.value);
+    if(!Utils.IsNullOrUndefined(this.englishTitle!.value)) data.append('englishTitle', this.englishTitle!.value);
+    if(!Utils.IsNullOrUndefined(this.japaneseTitle!.value)) data.append('japaneseTitle', this.japaneseTitle!.value);
+    if(!Utils.IsNullOrUndefined(this.japaneseRomaji!.value)) data.append('japaneseTitleRomaji', this.japaneseRomaji?.value);
+    if(!Utils.IsNullOrUndefined(this.season!.value)) data.append('season', this.season!.value);
+    if(!Utils.IsNullOrUndefined(this.startAirDate!.value)) data.append('startAirDate', this.startAirDate!.value);
+    if(!Utils.IsNullOrUndefined(this.endAirDate!.value)) data.append('endAirDate', this.endAirDate!.value);
+    if(!Utils.IsNullOrUndefined(this.rating!.value)) data.append('tvRating', this.rating!.value);
+    if(!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value);
+    if(!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value)
   
-    this.animeService.updateAnime(formData).subscribe({
-      next: () => {
-        this.toastService.show('Success', `Updated '${this.title?.value}'.`)
-        this.form.reset();
-      },
-      error: (error) => {
-        this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
-      }
-    });
+    this.animeService
+      .updateAnime(data)
+      .subscribe({
+        next: () => {
+          this.toastService.show('Success', `Updated '${this.title?.value}'.`)
+          this.form.reset();
+          this.currentFranchise = this.selectedFranchise$.value?.name!;
+        },
+        error: () => {
+          this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
+        }
+      });
   }
+
   onImagePicked(event: Event) {
     const file = (event.target as HTMLInputElement).files![0];
     this.form.patchValue({image: file});
@@ -130,9 +143,44 @@ export class UpdateAnimeComponent {
   clearStatus() {
     this.status?.reset();
   }
-  clearGenres() {
-    this.genres?.reset();
+  
+  clearCategories() {
+    this.categories?.reset();
   }
+
+  selectFranchise(franchise: Franchise) {
+    this.selectedFranchise$.next(franchise);
+    this.form.patchValue({ franchiseId: franchise.id });
+    this.searchResults = [];
+    this.shown = false;
+  }
+
+  deselectAnime() {
+    this.selectedFranchise$.next(null);
+    this.form.patchValue({ franchiseId: '' }); //keep replicating from []
+  }
+
+  private prefillform(res: Anime) {
+    this.form.patchValue({
+      title: res.title,
+      description: res.description,
+      status: res.releaseStatus,
+      categories: res.categories.map(x => x.id), //might need to use Id instead. I assume it's comparing [value] to see which are selected
+      episodes: res.episodeCount,
+      year: res.year,
+      mediaType: res.mediaType,
+      score: res.score,
+      englishTitle: res.englishTitle,
+      japaneseTitle: res.japaneseTitle,
+      japaneseRomaji: res.japaneseTitleRomaji,
+      season: res.season,
+      startAirDate: res.startAirDate === null ? null : new Date(res.startAirDate).toISOString().split('T')[0],
+      endAirDate: res.endAirDate === null ? null : new Date(res.endAirDate).toISOString().split('T')[0],
+      rating: res.tvRating !== "null" ? res.tvRating : null,
+      episodeLength: res.episodeLength
+    });
+  }
+
   //getters so we can use in form control in template
   get title() {
     return this.form.get('title');
@@ -150,8 +198,8 @@ export class UpdateAnimeComponent {
     return this.form.get('status');
   }
 
-  get genres() {
-    return this.form.get('genres');
+  get categories() {
+    return this.form.get('categories');
   }
 
   get coverImage() {
@@ -203,5 +251,9 @@ export class UpdateAnimeComponent {
 
   get episodeLength() {
     return this.form.get('episodeLength');
+  }
+
+  get franchiseId() {
+    return this.form.get('franchiseId');
   }
 }

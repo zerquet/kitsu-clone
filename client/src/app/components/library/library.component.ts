@@ -1,11 +1,10 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, Renderer2, viewChild, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { LibraryItemDto } from '../../interfaces/libraryItemDto';
+import { LibraryEntryWithAnimeInfo } from '../../interfaces/libraryEntryWithAnimeInfo';
 import { UserLibraryService } from '../../services/user-library.service';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, Subject } from 'rxjs';
 import { RouterLink } from '@angular/router';
-import { LocalApiService } from '../../services/localApi.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditEntryComponent } from '../edit-entry/edit-entry.component';
 import { UserLibraryDataService } from '../../services/user-library-data.service';
@@ -30,7 +29,7 @@ export class LibraryComponent implements OnInit {
   currEditingAnimeIdForRating$ = new BehaviorSubject(-1);
   progressCellMode$ = new BehaviorSubject("read");
   currEditingAnimeIdForProgress$ = new BehaviorSubject(-1);
-  potentialProgressUpdate$ = new BehaviorSubject<LibraryItemDto | undefined>(undefined)
+  potentialProgressUpdate$ = new BehaviorSubject<LibraryEntryWithAnimeInfo | undefined>(undefined)
 
   // originalAnimeList$ = this.userLibraryService.getLibrary()
   // .pipe(
@@ -70,7 +69,7 @@ export class LibraryComponent implements OnInit {
       this.currEditingAnimeIdForProgress$.next(-1);
       //Save when user clicks out. 
       if(this.potentialProgressUpdate$.value !== undefined) {
-        this.updateProgress(this.potentialProgressUpdate$.value as LibraryItemDto)
+        this.updateProgress(this.potentialProgressUpdate$.value as LibraryEntryWithAnimeInfo)
       }
     }
   })
@@ -140,7 +139,7 @@ export class LibraryComponent implements OnInit {
     // )
   }
 
-  openEditModal(entry: LibraryItemDto) {
+  openEditModal(entry: LibraryEntryWithAnimeInfo) {
     const modal = this.modalService.open(EditEntryComponent,);
     modal.componentInstance.initializeModalData({...entry});
   }
@@ -160,21 +159,21 @@ export class LibraryComponent implements OnInit {
     this.currEditingAnimeIdForProgress$.next(animeId)
   }
 
-  onProgressChange(entry: LibraryItemDto, event: Event) {
+  onProgressChange(entry: LibraryEntryWithAnimeInfo, event: Event) {
     //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it.
     let potential = {...entry};
-    potential.episodesSeen = Number((event.target as HTMLInputElement).value);
+    potential.episodesWatched = Number((event.target as HTMLInputElement).value);
     this.potentialProgressUpdate$.next(potential);
   }
 
-  onIncrementProgressClick(currEntry: LibraryItemDto) {
+  onIncrementProgressClick(currEntry: LibraryEntryWithAnimeInfo) {
     var copy = {...currEntry}
-    copy.episodesSeen++;
+    copy.episodesWatched++;
     this.updateProgress(copy)
   }
 
-  updateRating(currEntry: LibraryItemDto, newRating: string) {
-    this.userLibraryService.editStatus(currEntry.libraryEntryId, currEntry.animeId, currEntry.status, currEntry.episodesSeen, Number(newRating))
+  updateRating(currEntry: LibraryEntryWithAnimeInfo, newRating: string) {
+    this.userLibraryService.updateLibraryEntry(currEntry.libraryEntryId, currEntry.animeId, currEntry.watchStatus!, currEntry.episodesWatched, Number(newRating))
       .subscribe({
         next: res => {
           //update libraryItemDto in observable list with returned response. next. ONLY if status is 200
@@ -184,7 +183,7 @@ export class LibraryComponent implements OnInit {
           let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
             map(item => {
               if(item.libraryEntryId === res.id) {
-                item.rating = Number(res.rating)
+                item.userRating = Number(res.userRating)
               }
               return item;
             });
@@ -195,14 +194,14 @@ export class LibraryComponent implements OnInit {
       })
   }
 
-  updateProgress(currEntry: LibraryItemDto) {
-    this.userLibraryService.editStatus(currEntry.libraryEntryId, currEntry.animeId, currEntry.status, currEntry.episodesSeen, currEntry.rating)
+  updateProgress(currEntry: LibraryEntryWithAnimeInfo) {
+    this.userLibraryService.updateLibraryEntry(currEntry.libraryEntryId, currEntry.animeId, currEntry.watchStatus!, currEntry.episodesWatched, currEntry.userRating!)
       .subscribe({
         next: res => {
           let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
             map(item => {
               if(item.libraryEntryId === res.id) {
-                item.episodesSeen = res.episodesSeen;
+                item.episodesWatched = res.episodesWatched;
               }
               return item;
             });
@@ -212,9 +211,9 @@ export class LibraryComponent implements OnInit {
       })
   }
 
-  private sorter(list: LibraryItemDto[] ,column: string, direction: string, library: string, searchTerm: string): LibraryItemDto[] {
+  private sorter(list: LibraryEntryWithAnimeInfo[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntryWithAnimeInfo[] {
     if(library !== "all")
-      list = list.filter(i => i.status === library); 
+      list = list.filter(i => i.watchStatus === library); 
 
     if(searchTerm !== "")
       list = list.filter(j => j.title.toLocaleLowerCase().includes(searchTerm));
@@ -229,16 +228,16 @@ export class LibraryComponent implements OnInit {
     else if(column === "Length")
     {
       if(direction === "asc")
-        list.sort((a, b) => a.animeTotalEpisodes < b.animeTotalEpisodes ? -1 : 1)
+        list.sort((a, b) => a.animeTotalEpisodes! < b.animeTotalEpisodes! ? -1 : 1)
       else
-        list.sort((a, b) => a.animeTotalEpisodes < b.animeTotalEpisodes ? 1 : -1)
+        list.sort((a, b) => a.animeTotalEpisodes! < b.animeTotalEpisodes! ? 1 : -1)
     }
     else if(column === "Rating") 
     {
       if(direction === "asc")
-        list.sort((a, b) => a.rating < b.rating ? -1 : 1)
+        list.sort((a, b) => a.userRating! < b.userRating! ? -1 : 1)
       else
-        list.sort((a, b) => a.rating < b.rating ? 1 : -1)
+        list.sort((a, b) => a.userRating! < b.userRating! ? 1 : -1)
     }
 
     return list;

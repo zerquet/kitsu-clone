@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { LibraryItemDto } from '../../interfaces/libraryItemDto';
+import { LibraryEntryWithAnimeInfo } from '../../interfaces/libraryEntryWithAnimeInfo';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
@@ -15,7 +15,7 @@ import { UserLibraryDataService } from '../../services/user-library-data.service
   styleUrl: './edit-entry.component.css'
 })
 export class EditEntryComponent {
-  libraryEntry = new BehaviorSubject<LibraryItemDto | undefined>(undefined);
+  libraryEntry = new BehaviorSubject<LibraryEntryWithAnimeInfo | undefined>(undefined);
   activeModal = inject(NgbActiveModal);
   userLibraryService = inject(UserLibraryService);
   userLibraryDataService = inject(UserLibraryDataService);
@@ -25,12 +25,12 @@ export class EditEntryComponent {
     progress: new FormControl(0, [this.progressIsDifferentValidator()])
   });
 
-  initializeModalData(entry: LibraryItemDto) {
+  initializeModalData(entry: LibraryEntryWithAnimeInfo) {
     debugger;
     this.libraryEntry.next(entry);
-    this.form.patchValue({"status": entry.status});
-    this.form.patchValue({"rating": entry.rating});
-    this.form.patchValue({"progress": entry.episodesSeen});
+    this.form.patchValue({"status": entry.watchStatus});
+    this.form.patchValue({"rating": entry.userRating});
+    this.form.patchValue({"progress": entry.episodesWatched});
   }
 
   closeModal() {
@@ -44,15 +44,15 @@ export class EditEntryComponent {
     //close modal
     //update library component? might have to move originalList$ to a service class or sum
     let entry = this.libraryEntry.value;
-    this.userLibraryService.editStatus(entry?.libraryEntryId!, entry?.animeId!, this.status.value!, this.progress.value!, this.rating.value!)
+    this.userLibraryService.updateLibraryEntry(entry?.libraryEntryId!, entry?.animeId!, this.status.value!, this.progress.value!, this.rating.value!)
       .subscribe({
         next: res => {
           let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
             map(item => {
               if(item.libraryEntryId === res.id) {
-                item.rating = Number(res.rating);
-                item.status = res.status;
-                item.episodesSeen = res.episodesSeen
+                item.userRating = Number(res.userRating);
+                item.watchStatus = res.watchStatus;
+                item.episodesWatched = res.episodesWatched;
               }
               return item;
             });
@@ -66,7 +66,7 @@ export class EditEntryComponent {
   }
 
   removeEntry() {
-    this.userLibraryService.deleteStatus(this.libraryEntry.value?.animeId!).subscribe(res => {
+    this.userLibraryService.deleteLibraryEntry(this.libraryEntry.value?.animeId!).subscribe(res => {
       let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.filter(item => item.animeId !== this.libraryEntry.value?.animeId);
       this.userLibraryDataService.originalAnimeList$.next(updatedCollection);
       this.activeModal.close();
@@ -90,7 +90,7 @@ export class EditEntryComponent {
   statusIsDifferentValidator(): ValidatorFn {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
-      if(control.value === this.libraryEntry.value?.status) {
+      if(control.value === this.libraryEntry.value?.watchStatus) {
         return null;
       }
       return {statusIsDifferent:true}
@@ -103,7 +103,7 @@ export class EditEntryComponent {
       //control values are strings. needs to be converted to number
       debugger;
       let controlVal = control.value === "" || control.value === null ? null : Number(control.value);
-      if(controlVal === this.libraryEntry.value?.rating) {
+      if(controlVal === this.libraryEntry.value?.userRating) {
         return null;
       }
       return {ratingIsDifferent:true}
@@ -113,7 +113,7 @@ export class EditEntryComponent {
   progressIsDifferentValidator(): ValidatorFn {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
-      if(control.value === this.libraryEntry.value?.episodesSeen) {
+      if(control.value === this.libraryEntry.value?.episodesWatched) {
         return null;
       }
       return {progressIsDifferent:true}
