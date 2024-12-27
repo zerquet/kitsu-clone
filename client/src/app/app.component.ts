@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavMenuComponent } from "./components/shared/nav-menu/nav-menu.component";
-import { ToastsComponent } from "./components/shared/toasts/toasts.component";
-import { AuthService } from './services/auth.service';
+import { NavMenuComponent } from "./shared/components/nav-menu/nav-menu.component";
+import { ToastsComponent } from "./shared/components/toasts/toasts.component";
+import { AuthService } from './auth/services/auth.service';
 
 @Component({
   selector: 'app-root',

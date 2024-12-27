@@ -9,12 +9,15 @@
     --hover-white: RGBA(237, 240, 241, 1);
     --text-gray2: #999;
     --text-gray3: #464646;
+    --text-gray4: #b2b2b2;
     --hover-gray: #fafafa;
     --hover-gray2: #f2f2f2;
     --background-gray: #f7f7f7;
     --border-lightgray: #eaeaea;
     --border-lightgray2: #e5e5e5;
+    --border-gray: #ccc;
     --text-gray: #7c7c7c;
+    --text-gray5: #818a91;
     --hover-orange: #f75239;
     --hover-orange2: #f3290a;
     --link-turquoise: #16a085;
