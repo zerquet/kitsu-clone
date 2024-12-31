@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
   movieChecked = false;
 
   constructor(private animeService: AnimeService) {
-    this.results = this.animeService.getAnimes();
+    this.results = this.animeService.getDummydata();
     this.allResults = this.results;
     this.form = new FormGroup({
       searchControl: new FormControl()

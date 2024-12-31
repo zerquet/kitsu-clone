@@ -121,6 +121,7 @@ td.rating-cell {
     /* only td elements with rating-cell class*/
     border-left: 1px solid var(--border-lightgray2);
     border-right: 1px solid var(--border-lightgray2);
+    line-height: 35px;
 }
 
 .progress-cell {
@@ -130,11 +131,18 @@ td.rating-cell {
 
 td.progress-cell {
     border-right: 1px solid var(--border-lightgray2);
+    line-height: 35px;
+    font-size: 14px;
 }
 
 .edit-btn-cell {
     text-align: center;
     min-width: 56px;
+    margin-bottom: auto;
+    margin-top: auto;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    width: 80px;
 }
 
 tbody {
@@ -178,7 +186,7 @@ tbody {
 }
 
 input.progress-cell-input {
-    width: 70px;
+    width: 60px;
 }
 
 .increment-episode-span {
@@ -234,6 +242,8 @@ input.progress-cell-input {
     border-radius: 5px;
     margin-left: 5px;
     margin-right: 5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    border: 1px solid var(--border-lightgray);
 }
 
 #library-sidemenu-container-2 {

@@ -37,6 +37,9 @@ namespace server.Services
                 {
                     Id = anime.Id,
                     Title = anime.Title,
+                    Score = anime.Score,
+                    Year = anime.Year,
+                    Description = anime.Description,
                     ImageUrl = anime.ImageUrl
                 })
                 .ToListAsync();

@@ -79,7 +79,8 @@ export class AddAnimeComponent implements OnInit {
     const data = new FormData();
     data.append('title', this.title!.value!);
     if(!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description!.value);
-    data.append('image', this.image!.value!);
+    //TODO see if I can upload image from frontend. Currently sends to server and server uploads to frontend folder. same with coverImage. check update-anime as well.
+    data.append('image', this.image!.value!); 
     if(!Utils.IsNullOrUndefined(this.coverImage!.value)) data.append('coverImage', this.coverImage!.value);
     if(!Utils.IsNullOrUndefined(this.year!.value)) data.append('year', this.year!.value!.toString()!);
     if(!Utils.IsNullOrUndefined(this.episodes!.value)) data.append('episodeCount', this.episodes!.value!.toString()!);

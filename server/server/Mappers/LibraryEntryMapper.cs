@@ -23,14 +23,14 @@ namespace server.Mappers
             libraryEntry.EpisodesWatched = dto.EpisodesWatched;
         }
 
-        public static LibraryEntryWithAnimeInfoDto ToLibraryEntryWithAnimeInfoDto(this LibraryEntry animeLibraryEntry, Anime anime, string? imageBase64)
+        public static LibraryEntryWithAnimeInfoDto ToLibraryEntryWithAnimeInfoDto(this LibraryEntry animeLibraryEntry, Anime anime)
         {
             return new LibraryEntryWithAnimeInfoDto
             {
                 AnimeId = anime.Id,
                 Title = anime.Title,
                 AnimeTotalEpisodes = anime.EpisodeCount,
-                ImageBase64 = imageBase64,
+                ImageBase64 = $"/assets/images/{anime.ImageUrl}.jpg",
                 LibraryEntryId = animeLibraryEntry.Id,
                 WatchStatus = animeLibraryEntry.WatchStatus,
                 UserRating = animeLibraryEntry.UserRating,

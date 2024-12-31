@@ -1,3 +1,13 @@
+#kitsu-nav {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#nav-spacer {
+    height: 40px;
+}
+
 .navbar {
     background-color: var(--background-burgundy) !important;
 }
@@ -6,20 +16,20 @@
     color: var(--text-white)
 }
 
-#navbarSupportedContent a {
+.nav-link {
     color: var(--text-gray2);
     font-size: 14px;
 }
 
-#navbarSupportedContent > ul > li > a:hover {
+.nav-link:hover {
     color: var(--hover-white);
 }
 
-#navSearch {
+#nav-search-form {
     position: relative;
 }
 
-#navSearch i {
+#nav-search-form i {
     position: absolute;
     top: 4px;
     left: 10px;
@@ -27,7 +37,7 @@
     color: #a99fa8;
 }
 
-#mediaSearch {
+#navbar-search-field {
     background-color: var(--background-burgundy2);
     color: var(--text-white2);
     padding-left: 30px;
@@ -38,7 +48,7 @@
     height: 25px;
 }
 
-#mediaSearch:active, #mediaSearch:focus {
+#navbar-search-field:active, #navbar-search-field:focus {
     background-color: var(--background-burgundy3);
     outline-color: transparent;
     outline-style: none;
@@ -46,74 +56,4 @@
 
 .cursor {
     cursor: pointer;
-}
-/*Copied from home.component.css. Renamed dropdown -> searchDropdown to disambiguiate from Bootstrap's class*/
-.searchDropdown {
-    position: absolute;
-    width: 400px;
-    padding: 0px 0px;
-    background: var(--background-white);
-    border: 1px solid #ccc;
-    margin-top: -1px;
-    z-index: 9999;
-    box-sizing: border-box;
-    transition: all .3s ease;
-    opacity: 0;
-    visibility: hidden;
-    box-shadow: 0px 6px 12px rgba(0,0,0,.1);
-}
-
-#dropdownTitle {
-    padding: 0px 20px;
-    padding-left: 20px;
-    padding-left: 50px;
-    border-bottom: 1px solid #868686;
-
-}
-
-.scroller {
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-.item {
-    display: flex;
-    position: relative;
-    /* height: 40px; */
-    line-height: 40px;
-    padding: 0px 20px;
-    /* padding-left: 20px;
-    padding-left: 50px; */
-    text-transform: capitalize;
-    border-bottom: 1px solid #e5e5e5;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    cursor: pointer;
-}
-
-.item:hover {
-    background-color: var(--hover-gray);
-}
-
-.open {
-    opacity: 1;
-    visibility: visible;
-}
-
-.resultImgContainer {
-    width: 15%;
-}
-
-.resultsAnimeImg {
-    width: 100%;
-    height: 100%;
-}
-
-.resultInfoContainer {
-    padding-left: 10px;
-}
-
-.resultInfoContainer p {
-    top: 0;
 }

@@ -9,20 +9,21 @@ import { AnimeService } from '../../services/anime.service';
 import { Anime } from '../../models/anime';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth/services/auth.service';
+import { SearchResultsComponent } from '../search-results/search-results.component';
 
 @Component({
   selector: 'app-nav-menu',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, CommonModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule, SearchResultsComponent],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.css'
 })
 export class NavMenuComponent implements OnInit {
   form: FormGroup;
-  list: Anime[];
+  searchResults: Anime[]; //TODO maybe save this in a service? look also in home component
   shown = false;
   constructor(private modalService: NgbModal, private animeService: AnimeService, public authService: AuthService) {
-    this.list = [];
+    this.searchResults = [];
     this.form = new FormGroup({
       searchControl : new FormControl()
     });
@@ -36,7 +37,7 @@ export class NavMenuComponent implements OnInit {
       tap(value => {
         if (!value || value.trim().length === 0) {
           // Directly clear results if input is empty or whitespace
-          this.list = [];
+          this.searchResults = [];
           this.shown = false;
         }
       }),
@@ -51,7 +52,7 @@ export class NavMenuComponent implements OnInit {
       })
     )
     .subscribe(res => {
-      this.list = res;
+      this.searchResults = res;
       this.shown = res.length > 0 ? true : false;
     }); 
   }

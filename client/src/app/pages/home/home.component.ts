@@ -8,11 +8,13 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Form, FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../shared/services/category.service';
 import { Category } from '../../shared/models/category';
+import { SearchResultsComponent } from '../../shared/components/search-results/search-results.component';
+import { AnimeTooltipComponent } from '../../shared/components/anime-tooltip/anime-tooltip.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, SearchResultsComponent, AnimeTooltipComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit {
   form = new FormGroup({
     searchControl: new FormControl()
   });
+  showTooltipCallback: any;
 
   ngOnInit(): void {
     this.form.controls['searchControl'].valueChanges
@@ -71,7 +74,16 @@ export class HomeComponent implements OnInit {
     this.route.params
       .pipe(
         distinctUntilChanged(),
-        mergeMap(params => this.categoryService.getCategory(params["category"])))
+        mergeMap(params => {
+          if(params["category"]){
+            this.categoryWasGiven$.next(true);
+            return this.categoryService.getCategory(params["category"]);
+          }
+          else {
+            this.categoryWasGiven$.next(false);
+            return of(undefined);
+          }
+        }))
       .subscribe(res => this.currCategory$.next(res));
   }
 
@@ -83,6 +95,19 @@ export class HomeComponent implements OnInit {
     }
     else {
       return this.animeService.miniSearch(term);
+    }
+  }
+
+  onAnimePosterHover(id: number): void {
+    this.showTooltipCallback = setTimeout(() => {
+      this.activeAnimeId = id;
+    }, 300);
+  }
+
+  onAnimePosterHoverOut(): void {
+    if(this.showTooltipCallback) {
+      clearTimeout(this.showTooltipCallback);
+      this.activeAnimeId = 0;
     }
   }
 }

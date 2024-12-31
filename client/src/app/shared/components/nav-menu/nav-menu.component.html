@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-lg py-0">
+<nav id="kitsu-nav" class="navbar navbar-expand-lg py-0">
     <div class="container">
         <a class="navbar-brand" href="#">Kitsu</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content"
+            aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbar-content">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:void(0);" routerLink="../library">Library</a>
@@ -23,21 +23,13 @@
             <div>
                 <!--An absolute positioned element will appear at the top-left corner of the parent element. So adding this <div> encapsulating the form and dropdown <div>
                     makes it so that the dropdown window doesn't appear on the top-left position of the nav-->
-                <form id="navSearch" class="d-flex" role="search" [formGroup]="form">
+                <form id="nav-search-form" class="d-flex" role="search" [formGroup]="form">
                     <i class="bi bi-search"></i>
-                    <input id="mediaSearch" type="search" placeholder="Search" formControlName="searchControl">
+                    <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
                 </form>
-                <div class="searchDropdown" [ngClass]="{'open':shown && list !== undefined && list.length !== 0}">
-                    <div id="dropdownTitle">Search Results</div>
-                    <div class="scroller pt-1">
-                        @for (item of list; track item.id) {
-                            <div class="item">
-                                <div class="resultImgContainer"><img class="resultsAnimeImg" src="data:image/jpeg;base64, {{item.imageBase64}}"></div>
-                                <div class="resultInfoContainer"><p routerLink="../anime/{{item.id}}">{{item.title}}</p></div>
-                            </div>
-                        }
-                    </div>
-                </div>
+                @if(shown === true && searchResults !== undefined && searchResults.length !== 0) {
+                    <app-search-results [results]="searchResults"></app-search-results>
+                }
             </div>
             <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">
                 @if (authService.currentUserSig() === null) {
@@ -52,3 +44,4 @@
         </div>
     </div>
 </nav>
+<div id="nav-spacer"></div>

@@ -25,8 +25,7 @@ namespace server.Controllers
         public async Task<IActionResult> Get(int animeId) {
             var anime = await _animeService.Get(animeId);
             if (anime == null) return NotFound();
-            var dto = anime
-                .ToAnimeDto(FileServerService.GetAnimeImage(anime.ImageUrl!), FileServerService.GetAnimeImage(anime.CoverImageId!));
+            var dto = anime.ToAnimeDto();
             return Ok(dto);
         }
 
@@ -35,7 +34,7 @@ namespace server.Controllers
         {
             var animes = await _animeService.GetAll();
             var animesDto = animes
-                .Select(a => a.ToAnimeDto(FileServerService.GetAnimeImage(a.ImageUrl!), FileServerService.GetAnimeImage(a.CoverImageId!)))
+                .Select(a => a.ToAnimeDto())
                 .ToList();
             return Ok(animesDto);
         }
@@ -47,7 +46,7 @@ namespace server.Controllers
             if (categoryMatch == null) return NotFound();
             var animes = await _animeService.GetByCategoryId(categoryMatch.Id);
             var animesDto = animes
-                .Select(a => a.ToAnimeDto(FileServerService.GetAnimeImage(a.ImageUrl!), FileServerService.GetAnimeImage(a.CoverImageId!)))
+                .Select(a => a.ToAnimeDto())
                 .ToList();
             return Ok(animesDto);
         }
@@ -108,7 +107,7 @@ namespace server.Controllers
             {
                 Id = a.Id,
                 Title = a.Title,
-                ImageBase64 = FileServerService.GetAnimeImage(a.ImageUrl)
+                ImageBase64 = "/assets/images/" + a.ImageUrl + ".jpg"
             }).ToList();
 
             return Ok(animesDto);
@@ -133,7 +132,7 @@ namespace server.Controllers
             {
                 Id = a.Id,
                 Title = a.Title,
-                ImageBase64 = FileServerService.GetAnimeImage(a.ImageUrl)
+                ImageBase64 = "/assets/images/" + a.ImageUrl + ".jpg"
             }).ToList();
 
             return animesDto;

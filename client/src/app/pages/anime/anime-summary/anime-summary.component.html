@@ -5,17 +5,17 @@
             <span id="anime-quick-info-section" class="ps-2"><strong>{{anime.year}} | {{anime.mediaType}} | {{anime.episodeCount}} Episodes</strong></span>
             <span id="admin-link" class="ps-2"><a routerLink="../../update-anime/{{anime.id}}">Update entry</a></span>
         </div>
-        <div><strong id="anime-score">Overall Rating {{anime.score}}%</strong></div>
+        <div><strong id="anime-score">{{anime.score}}% Overall Rating</strong></div>
         <div class="mt-2">{{anime.description}}</div>
         <ul id="anime-categories-list" class="d-flex flex-wrap flex-row ps-0 mt-5">
             @for (cat of anime.categories; track cat) {
-                <li class="px-2 py-1 me-2"><a href="javascript:void(0);" routerLink="../../category/{{cat.name}}">{{cat.name}}</a></li>
+                <li class=""><a href="javascript:void(0);" routerLink="/home/category/{{cat.name}}">{{cat.name}}</a></li>
             }
         </ul>
     </div>
     <div id="anime-more-details">
-        <div class="p-3 ps-4">
-            <h6>Anime Details</h6>
+        <div class="p-3 px-4">
+            <h6><strong>Anime Details</strong></h6>
             <ul>
                 <li *ngIf="anime.englishTitle"><strong>English</strong><span>{{anime.englishTitle}}</span></li>
                 <li *ngIf="anime.japaneseTitle"><strong>Japanese</strong><span>{{anime.japaneseTitle}}</span></li>

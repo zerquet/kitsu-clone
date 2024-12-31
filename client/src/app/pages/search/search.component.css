@@ -1,15 +1,36 @@
+#search-container {
+    background: linear-gradient(90deg,#332532 50%,#f7f7f7 50%);
+}
+
 /*FILTERS SECTION*/
 #search-filters-section {
+    position: fixed;
+    width: 259px;
+    background: var(--background-burgundy2);
+    color: var(--text-gray6);
+    border-left: 1px solid var(--border-black);
+    border-right: 1px solid var(--border-black);
+    font-size: 13px;
+}
+
+#search-filters-section-placeholder {
     width: 20%;
 }
 
-#year-filter-section, #score-filter-section, #total-episodes-filter-section {
-    font-size: 0.9rem;
-    border-bottom: 1px solid black;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 10px;
-    padding-top: 10px;
+#year-filter-section, #score-filter-section, #total-episodes-filter-section, #type-filter-section {
+    border-bottom: 1px solid var(--border-black);
+    padding: 10px;
+}
+
+.filter-values-pill {
+    background: #3f2e3e;
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 12px;
+}
+
+.filter-values-preview {
+    font-weight: 900;
 }
 
 mat-slider {
@@ -19,10 +40,43 @@ mat-slider {
 /*MAIN SECTION*/
 #search-main-section {
     width: 80%;
+    background: var(--background-gray);
+}
+
+#search-field-container {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+#search-field-container2 {
+    background-color: var(--text-white);
+    border-bottom: 1px solid var(--border-lightgray2);
+    padding: 20px 0 20px 20px;
+}
+
+#search-field-container2 i {
+    color: var(--text-gray2);
+    margin-right: 5px;
 }
 
 #search-field {
     width: 100%;
+    border: none;
+    outline-color: unset;
+    outline-style: none;
+}
+
+#search-results-section {
+    margin-top: 67px;
+}
+
+#sort button {
+    font-size: 12px;
+}
+
+#sort:hover {
+    color: var(--hover-orange);
 }
 
 /*Copied from home.component.css*/

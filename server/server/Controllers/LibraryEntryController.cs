@@ -42,8 +42,7 @@ namespace server.Controllers
             foreach (var l in libraryEntries)
             {
                 var anime = await _animeService.Get(l.AnimeId);
-                var image = FileServerService.GetAnimeImage(anime.ImageUrl);
-                libraryEntriesWithAnimeInfoDto.Add(l.ToLibraryEntryWithAnimeInfoDto(anime, image));
+                libraryEntriesWithAnimeInfoDto.Add(l.ToLibraryEntryWithAnimeInfoDto(anime));
             }
 
             return Ok(libraryEntriesWithAnimeInfoDto);

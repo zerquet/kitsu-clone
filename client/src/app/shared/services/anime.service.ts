@@ -76,4 +76,10 @@ export class AnimeService {
     return this.http
       .get<Anime[]>(`${this.baseUrl}${queryString}`);
   }
+
+  getDummydata(): Observable<Anime[]> {
+    return this.http
+      .get<Anime[]>('/api/data.json')
+      .pipe(shareReplay(1));
+  }
 }

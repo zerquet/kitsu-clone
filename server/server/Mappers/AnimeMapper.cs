@@ -6,7 +6,7 @@ namespace server.Mappers
     public static class AnimeMapper
     {
         //Does the 'this' make any sense here? It's not used an extension method.
-        public static AnimeDto ToAnimeDto(this Anime animeModel, string? imageBase64, string? coverImageBase64)
+        public static AnimeDto ToAnimeDto(this Anime animeModel)
         {
             return new AnimeDto
             {
@@ -16,12 +16,12 @@ namespace server.Mappers
                 Score = animeModel.Score,
                 Categories = animeModel.Categories.Select(x => x.ToCategoryDto()).ToList(),
                 ReleaseStatus = animeModel.ReleaseStatus,
-                ImageBase64 = imageBase64,
+                ImageBase64 = $"/assets/images/{animeModel.ImageUrl}.jpg",
                 Year = animeModel.Year,
                 EpisodeCount = animeModel.EpisodeCount,
                 MediaType = animeModel.MediaType,
                 Studios = animeModel.Studios,
-                CoverImageBase64 = coverImageBase64,
+                CoverImageBase64 = $"/assets/images/{animeModel.CoverImageId}.jpg",
                 EnglishTitle = animeModel.EnglishTitle,
                 JapaneseTitle = animeModel.JapaneseTitle,
                 JapaneseTitleRomaji = animeModel.JapaneseTitleRomaji,

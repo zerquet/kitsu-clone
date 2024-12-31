@@ -23,7 +23,7 @@
                         @for (item of list; track item.id) {
                             <div class="item">
                                 <span class="imgSquare" style="border-radius: 3px;"><div>
-                                    <img class="resultsAnimeImg" src="data:image/jpeg;base64, {{item.imageBase64}}"></div>
+                                    <img class="resultsAnimeImg" [src]="item.imageBase64"></div>
                                 </span>
                                 <div class="resultInfoContainer"><p (click)="selectAnimeForEpisodeAddition(item)">{{item.title}}</p></div>
                             </div>
