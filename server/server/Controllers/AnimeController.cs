@@ -85,12 +85,12 @@ namespace server.Controllers
             if(request.Image != null)
             {
                 imageId = Guid.NewGuid().ToString();
-                FileServerService.PostAnimeImage(imageId, request.Image); //delete previous photo?
+                await FileServerService.PostAnimeImage(imageId, request.Image); //delete previous photo?
             }
             if(request.CoverImage != null)
             {
                 coverImageId= Guid.NewGuid().ToString();
-                FileServerService.PostAnimeImage(coverImageId, request.CoverImage); //delete previous cover too?
+                await FileServerService.PostAnimeImage(coverImageId, request.CoverImage); //delete previous cover too?
             }
             request.ToAnimeFromUpdate(animeMatch, imageId, coverImageId);
             await _animeService.UpdateAnime(animeMatch);
@@ -136,6 +136,16 @@ namespace server.Controllers
             }).ToList();
 
             return animesDto;
+        }
+
+        [HttpGet("GetByFranchise/{franchiseId}")]
+        public async Task<IActionResult> GetByFranchise([FromRoute] int franchiseId)
+        {
+            var animes = await _animeService.GetByFranchise(franchiseId);
+            var animesDto = animes
+                .Select(a => a.ToAnimeDto())
+                .ToList();
+            return Ok(animesDto);
         }
     }
 }

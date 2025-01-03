@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AnimeService } from '../../shared/services/anime.service';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, map, mergeMap, Observable, of, OperatorFunction, Subject, switchMap, takeLast, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, filter, map, mergeMap, Observable, of, OperatorFunction, Subject, switchMap, take, takeLast, takeUntil, tap } from 'rxjs';
 import { Anime } from '../../shared/models/anime';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -18,84 +18,72 @@ import { AnimeTooltipComponent } from '../../shared/components/anime-tooltip/ani
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   private categoryService = inject(CategoryService);
-  private animeService: AnimeService = inject(AnimeService);
+  private animeService = inject(AnimeService);
   private route = inject(ActivatedRoute);
-  categoryWasGiven$ = new BehaviorSubject<boolean>(false);
-  currCategory$ = new BehaviorSubject<Category | undefined>(undefined);
   categories$: Observable<Category[]> = this.categoryService.getAvailableCategories();
+  term$ = new BehaviorSubject<string>("");
+  activeAnimeId = 0;
+  show = false;
+  showTooltipCallback: any;
+  form = new FormGroup({ searchControl: new FormControl() });
+
+  currCategory$ = this.route.params
+    .pipe(
+      distinctUntilChanged(),
+      switchMap(params => {
+        if(params["category"])
+          return this.categoryService.getCategory(params["category"]);
+        else
+          return of(undefined);
+        }),
+      takeUntil(this.destroy$));
+
   animes$: Observable<Anime[]> = this.route.params
     .pipe(
       distinctUntilChanged(),
-      mergeMap(params => {
-        if(params["category"]){
-          this.categoryWasGiven$.next(true);
+      switchMap(params => {
+        if(params["category"])
           return this.animeService.getAnimesByCategory(params["category"]);
-        }
-        else {
-          this.categoryWasGiven$.next(false);
+        else
           return this.animeService.getAnimes();
-        } 
-      })
-    );
-  activeAnimeId = 0;
-  searchResults: Anime[] = [];
-  shown = false;
-  form = new FormGroup({
-    searchControl: new FormControl()
-  });
-  showTooltipCallback: any;
+      }),
+      takeUntil(this.destroy$));
+
+  //why cant i just use this.term$ here? why do i need to use combineLatest? this.term$ just returns the first char
+  searchResults$: Observable<Anime[]> = combineLatest([this.term$]) 
+    .pipe(
+      map(([term]) => term),
+      switchMap(term => this.search(term)),
+      takeUntil(this.destroy$));
 
   ngOnInit(): void {
     this.form.controls['searchControl'].valueChanges
       .pipe(
-        debounceTime(400),
+        debounceTime(200),
         distinctUntilChanged(),
-        tap(value => {
-          if (!value || value.trim().length === 0) {
-            // Directly clear results if input is empty or whitespace
-            this.searchResults = [];
-            this.shown = false;
-          }
-        }),
-        filter(term => term && term.trim().length > 2),
-        switchMap(term => {
-          if(term && term.trim().length > 2)
-            return this.animeService.miniSearch(term)
+        tap(term => {
+          if(term && term.trim().length > 0)
+            this.show = true;
           else 
-            return of([]);
-        }))
-      .subscribe(res => {
-        this.searchResults = res;
-        this.shown = res.length > 0 ? true : false;
-      }); 
-
-    this.route.params
-      .pipe(
-        distinctUntilChanged(),
-        mergeMap(params => {
-          if(params["category"]){
-            this.categoryWasGiven$.next(true);
-            return this.categoryService.getCategory(params["category"]);
-          }
-          else {
-            this.categoryWasGiven$.next(false);
-            return of(undefined);
-          }
-        }))
-      .subscribe(res => this.currCategory$.next(res));
+            this.show = false;
+        }),
+        takeUntil(this.destroy$))
+      .subscribe(term => this.term$.next(term));
   }
 
-  search(term: string): Observable<Anime[]> {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private search(term: string): Observable<Anime[]> {
     term = term.toLowerCase().trim();
-    if(term === "" || term === null || term === undefined) {
-      this.shown = false;
-      return new Observable<Anime[]>()
-    }
-    else {
-      return this.animeService.miniSearch(term);
-    }
+    if(term.length === 0)
+      return of([]);
+    return this.animeService.miniSearch(term);
   }
 
   onAnimePosterHover(id: number): void {

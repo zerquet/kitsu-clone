@@ -26,7 +26,6 @@ export class LibraryEntryModalComponent {
   });
 
   initializeModalData(entry: LibraryEntryWithAnimeInfo) {
-    debugger;
     this.libraryEntry.next(entry);
     this.form.patchValue({"status": entry.watchStatus});
     this.form.patchValue({"rating": entry.userRating});
@@ -44,7 +43,14 @@ export class LibraryEntryModalComponent {
     //close modal
     //update library component? might have to move originalList$ to a service class or sum
     let entry = this.libraryEntry.value;
-    this.userLibraryService.updateLibraryEntry(entry?.libraryEntryId!, entry?.animeId!, this.status.value!, this.progress.value!, this.rating.value!)
+    const data = {
+      libraryEntryId: entry?.libraryEntryId,
+      animeId: entry?.animeId,
+      watchStatus: this.status.value,
+      episodesWatched: this.progress.value,
+      userRating: this.rating.value
+    }
+    this.userLibraryService.updateLibraryEntry(data)
       .subscribe({
         next: res => {
           let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.

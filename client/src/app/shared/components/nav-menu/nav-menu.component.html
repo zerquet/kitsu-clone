@@ -27,8 +27,8 @@
                     <i class="bi bi-search"></i>
                     <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
                 </form>
-                @if(shown === true && searchResults !== undefined && searchResults.length !== 0) {
-                    <app-search-results [results]="searchResults"></app-search-results>
+                @if(show === true ) {
+                    <app-search-results [results$]="searchResults$"></app-search-results>
                 }
             </div>
             <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">

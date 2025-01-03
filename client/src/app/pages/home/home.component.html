@@ -2,7 +2,13 @@
     <div class="row">
         <div class="col-sm-9">
             <div class="row">
-                <div class="col-sm-12"><h3 class="pt-5">{{currCategory$.value?.name ?? "Explore"}} Anime</h3></div>
+                <div class="col-sm-12">
+                    <h3 class="pt-5">
+                        <ng-container *ngIf="currCategory$ | async; let category; else noCategory">{{category.name}}</ng-container>
+                        <ng-template #noCategory>Explore</ng-template> 
+                        Anime
+                    </h3>
+                </div>
                 <div class="col-sm-12">
                     <!--This search should be a component-->
                     <form id="home-search-form" action="" [formGroup]="form">
@@ -10,8 +16,8 @@
                         <input id="search-field" type="text" placeholder="What are you searching for?" formControlName="searchControl">
                     </form>
                     <!--This can definitely be made into a separate component. Just add if{} and pass list to componet via @Input(). Check category and nav-menu .ts as well-->
-                    @if(shown === true && searchResults !== undefined && searchResults.length !== 0) {
-                        <app-search-results [results]="searchResults"></app-search-results>
+                    @if(show === true) {
+                        <app-search-results [results$]="searchResults$"></app-search-results>
                     }
                 </div>
                 <div class="col-sm-12 mt-2"><small id="advanced-link-section">Or, browse with the <a id="advanced-link" routerLink="/search">advanced search</a></small></div>

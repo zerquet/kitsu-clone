@@ -25,11 +25,11 @@ export class LibraryComponent implements OnInit {
   sortOption$ = new BehaviorSubject("Title");
   libraryType$ = new BehaviorSubject("all");
   searchTerm$ = new BehaviorSubject("");
-  ratingCellMode$ = new BehaviorSubject("read"); //not used. Remove?
-  currEditingAnimeIdForRating$ = new BehaviorSubject(-1);
-  progressCellMode$ = new BehaviorSubject("read");
-  currEditingAnimeIdForProgress$ = new BehaviorSubject(-1);
-  potentialProgressUpdate$ = new BehaviorSubject<LibraryEntryWithAnimeInfo | undefined>(undefined)
+  ratingCellMode = "read"; //not used. Remove?
+  currAnimeIdForEditingRating = -1;
+  progressCellMode = "read";
+  currAnimeIdForEditingProgress = -1;
+  potentialProgressUpdate: LibraryEntryWithAnimeInfo | undefined = undefined;
   //When behavior subject values are updated, the filteted list is too. 
   //https://chatgpt.com/share/675410d9-9a68-8003-9599-c495ff36fb9e
   filteredAnimeList$ = combineLatest([
@@ -40,7 +40,8 @@ export class LibraryComponent implements OnInit {
     this.searchTerm$
   ]).pipe(
     map(([list, sortDirection, sortOption, libraryType, searchTerm]) => 
-      this.sorter(list, sortOption, sortDirection, libraryType, searchTerm))
+      //similar methods as sorter() didnt need arguments passed (advanced, mini search). copy from to here? it's using the same behavior subject pattern..
+      this.sorter(list, sortOption, sortDirection, libraryType, searchTerm)) 
   );
   @ViewChild("ratingEditMenu") ratingEditMenu!: ElementRef;
   @ViewChild("progressEditField") progressEditField!: ElementRef;
@@ -48,16 +49,16 @@ export class LibraryComponent implements OnInit {
     .listen("window", "click", (e: Event) => {
       //when all dropdowns are not shown, ratingEditMenu will be undefined. Return since we don't need to do anything else.
       //Only run when the dropdown is not clicked. Otherwise, all clicks (including on the dropdown) get into this and the menu will never close
-      if(this.ratingCellMode$.value === "edit" && this.ratingEditMenu !== undefined && e.target !== this.ratingEditMenu.nativeElement) {
-        this.ratingCellMode$.next("read");
-        this.currEditingAnimeIdForRating$.next(-1);
+      if(this.ratingCellMode === "edit" && this.ratingEditMenu !== undefined && e.target !== this.ratingEditMenu.nativeElement) {
+        this.ratingCellMode = "read";
+        this.currAnimeIdForEditingRating = -1;
       }
-      if(this.progressCellMode$.value === "edit" && this.progressEditField !== undefined && e.target !== this.progressEditField.nativeElement) {
-        this.progressCellMode$.next("read");
-        this.currEditingAnimeIdForProgress$.next(-1);
+      if(this.progressCellMode === "edit" && this.progressEditField !== undefined && e.target !== this.progressEditField.nativeElement) {
+        this.progressCellMode = "read";
+        this.currAnimeIdForEditingProgress = -1;
         //Save when user clicks out. 
-        if(this.potentialProgressUpdate$.value !== undefined) {
-          this.updateProgress(this.potentialProgressUpdate$.value as LibraryEntryWithAnimeInfo)
+        if(this.potentialProgressUpdate !== undefined) {
+          this.updateProgress(this.potentialProgressUpdate as LibraryEntryWithAnimeInfo)
         }
       }
     })
@@ -73,23 +74,17 @@ export class LibraryComponent implements OnInit {
   }
 
   //FORM GETTERS
-  get search() {
-    return this.form.get('search');
-  }
+  get search() { return this.form.get('search'); }
 
   //COMPONENT METHODS
-  changeLibraryType(type: string) {
-    this.libraryType$.next(type);
-  }
+  changeLibraryType = (type: string) => this.libraryType$.next(type);
 
   toggleDirection() {
     const val = this.sortDirection$.value === "asc" ? "desc": "asc";
     this.sortDirection$.next(val);
   }
 
-  changeSortOption(option: string) {
-    this.sortOption$.next(option);
-  }
+  changeSortOption = (option: string) => this.sortOption$.next(option);
 
   openEditModal(entry: LibraryEntryWithAnimeInfo) {
     const modal = this.modalService.open(LibraryEntryModalComponent,);
@@ -99,23 +94,21 @@ export class LibraryComponent implements OnInit {
   onRatingClick(animeId: number) {
     //edit = user edits rating
     //read = user is just reading the value/not editing
-    const val = this.ratingCellMode$.value === "read" ? "edit": "read";
-    this.ratingCellMode$.next(val);
-    this.currEditingAnimeIdForRating$.next(animeId)
+    this.ratingCellMode = this.ratingCellMode === "read" ? "edit": "read";
+    this.currAnimeIdForEditingRating = animeId;
   }
 
   onProgressClick(animeId: number) {
     //edit and read have same definitions as onRatingClick
-    const val = this.progressCellMode$.value === "read" ? "edit": "read";
-    this.progressCellMode$.next(val);
-    this.currEditingAnimeIdForProgress$.next(animeId)
+    this.progressCellMode = this.progressCellMode === "read" ? "edit": "read";
+    this.currAnimeIdForEditingProgress = animeId;
   }
 
   onProgressChange(entry: LibraryEntryWithAnimeInfo, event: Event) {
-    //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it.
+    //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it. //TODO check if this comment is still accurate. belongs below?
     let potential = {...entry};
     potential.episodesWatched = Number((event.target as HTMLInputElement).value);
-    this.potentialProgressUpdate$.next(potential);
+    this.potentialProgressUpdate = potential;
   }
 
   onIncrementProgressClick(currEntry: LibraryEntryWithAnimeInfo) {
@@ -125,7 +118,14 @@ export class LibraryComponent implements OnInit {
   }
 
   updateRating(currEntry: LibraryEntryWithAnimeInfo, newRating: string) {
-    this.userLibraryService.updateLibraryEntry(currEntry.libraryEntryId, currEntry.animeId, currEntry.watchStatus!, currEntry.episodesWatched, Number(newRating))
+    const data = {
+      libraryEntryId: currEntry.libraryEntryId,
+      animeId: currEntry.animeId,
+      watchStatus: currEntry.watchStatus,
+      episodesWatched: currEntry.episodesWatched,
+      userRating: Number(newRating)
+    }
+    this.userLibraryService.updateLibraryEntry(data)
       .subscribe({
         next: res => {
           //update libraryItemDto in observable list with returned response. next. ONLY if status is 200
@@ -147,7 +147,14 @@ export class LibraryComponent implements OnInit {
   }
 
   updateProgress(currEntry: LibraryEntryWithAnimeInfo) {
-    this.userLibraryService.updateLibraryEntry(currEntry.libraryEntryId, currEntry.animeId, currEntry.watchStatus!, currEntry.episodesWatched, currEntry.userRating!)
+    const data = {
+      libraryEntryId: currEntry.libraryEntryId,
+      animeId: currEntry.animeId,
+      watchStatus: currEntry.watchStatus,
+      episodesWatched: currEntry.episodesWatched,
+      userRating: currEntry.userRating
+    }
+    this.userLibraryService.updateLibraryEntry(data)
       .subscribe({
         next: res => {
           let updatedCollection = this.userLibraryDataService.originalAnimeList$.value.
@@ -158,7 +165,7 @@ export class LibraryComponent implements OnInit {
               return item;
             });
             this.userLibraryDataService.originalAnimeList$.next(updatedCollection);
-            this.potentialProgressUpdate$.next(undefined);
+            this.potentialProgressUpdate = undefined;
         }
       })
   }

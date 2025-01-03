@@ -12,6 +12,7 @@ export const routes: Routes = [
     {path: "home", component: HomeComponent},
     {path: "home/category/:category", component: HomeComponent},
     {path: "anime/:id", component: AnimeComponent},
+    {path: "anime/:id/:tab", component: AnimeComponent},
     {path: "add-anime", component: AddAnimeComponent},
     {path: "update-anime/:id", component: UpdateAnimeComponent},
     {path: "search", component: SearchComponent},

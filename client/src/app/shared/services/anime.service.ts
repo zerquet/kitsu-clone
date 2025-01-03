@@ -77,6 +77,11 @@ export class AnimeService {
       .get<Anime[]>(`${this.baseUrl}${queryString}`);
   }
 
+  getAnimesByFranchise(id: number): Observable<Anime[]> {
+    return this.http
+      .get<Anime[]>(`${this.baseUrl}/GetByFranchise/${id}`);
+  }
+
   getDummydata(): Observable<Anime[]> {
     return this.http
       .get<Anime[]>('/api/data.json')

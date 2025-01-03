@@ -1,10 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SignInComponent } from '../../../auth/components/sign-in/sign-in.component';
 import { SignUpComponent } from '../../../auth/components/sign-up/sign-up.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, filter, map, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AnimeService } from '../../services/anime.service';
 import { Anime } from '../../models/anime';
 import { CommonModule } from '@angular/common';
@@ -18,43 +18,46 @@ import { SearchResultsComponent } from '../search-results/search-results.compone
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.css'
 })
-export class NavMenuComponent implements OnInit {
-  form: FormGroup;
-  searchResults: Anime[]; //TODO maybe save this in a service? look also in home component
-  shown = false;
-  constructor(private modalService: NgbModal, private animeService: AnimeService, public authService: AuthService) {
-    this.searchResults = [];
-    this.form = new FormGroup({
-      searchControl : new FormControl()
-    });
-  }
+export class NavMenuComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private modalService = inject(NgbModal);
+  private animeService = inject(AnimeService);
+  public authService = inject(AuthService);
+  show = false;
+  term$ = new BehaviorSubject<string>("");
+  form = new FormGroup({ searchControl : new FormControl()});
+
+  searchResults$: Observable<Anime[]> = combineLatest([this.term$]) 
+    .pipe(
+      map(([term]) => term),
+      switchMap(term => this.search(term)),
+      takeUntil(this.destroy$)); //TODO mini search logic is duplicate from home component. shared?
 
   ngOnInit(): void {
     this.form.controls['searchControl'].valueChanges
-    .pipe(
-      debounceTime(400),
-      distinctUntilChanged(),
-      tap(value => {
-        if (!value || value.trim().length === 0) {
-          // Directly clear results if input is empty or whitespace
-          this.searchResults = [];
-          this.shown = false;
-        }
-      }),
-      filter(term => term && term.trim().length > 2),
-      switchMap(term => {
-        if(term && term.trim().length > 2) {
-          return this.animeService.miniSearch(term)
-        } 
-        else {
-          return of([]);
-        }
-      })
-    )
-    .subscribe(res => {
-      this.searchResults = res;
-      this.shown = res.length > 0 ? true : false;
-    }); 
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        tap(term => {
+          if(term && term.trim().length > 0)
+            this.show = true;
+          else 
+            this.show = false;
+        }),
+        takeUntil(this.destroy$))
+      .subscribe(term => this.term$.next(term));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private search(term: string): Observable<Anime[]> {
+    term = term.toLowerCase().trim();
+    if(term.length === 0)
+      return of([]);
+    return this.animeService.miniSearch(term);
   }
 
   openSignInModal() {

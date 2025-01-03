@@ -1,7 +1,7 @@
 <div class="search-results-dropdown open">
     <div id="search-results-heading">Search Results</div>
     <div id="results-type-section"><div>MEDIA</div><div><a href="javascript:void(0);">LOAD MORE</a></div></div>
-    <div class="search-results-scroller pt-1">
+    <div *ngIf="results$ | async; let results " class="search-results-scroller pt-1">
         @for (result of results; track result.id) {
             <div class="search-result-item">
                 <div class="search-result-item-image-container"><img class="search-result-item-img" [src]="result.imageBase64"></div>

@@ -48,7 +48,7 @@
                                         <span class="title-cell-span" routerLink="../anime/{{anime.animeId}}">{{anime.title}}</span>
                                     </td>
                                     <td class="rating-cell">
-                                        @if(anime.animeId !== currEditingAnimeIdForRating$.value) {
+                                        @if(currAnimeIdForEditingRating !== anime.animeId) {
                                             <span class="rating-cell-span" (click)="onRatingClick(anime.animeId)">{{anime.userRating! > 0 ? anime.userRating! : "-"}}</span>
                                         }
                                         @else {
@@ -70,7 +70,7 @@
                                         }
                                     </td>
                                     <td class="progress-cell"><span>
-                                        @if(anime.animeId !== currEditingAnimeIdForProgress$.value) {
+                                        @if(currAnimeIdForEditingProgress !== anime.animeId) {
                                             <span class="progress-cell-span" (click)="onProgressClick(anime.animeId)">{{anime.episodesWatched}}</span>
                                         }
                                         @else {

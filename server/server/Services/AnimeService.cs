@@ -17,6 +17,7 @@ namespace server.Services
             string? term, int? minYear, int? maxYear, int? minEpisodes, int? maxEpisodes, int? minRating, int? maxRating, string[]? mediaType);
         Task AddCategories(List<int> categories, int animeId);
         Task UpdateCategories(Anime anime, List<int> newCategories);
+        Task<IReadOnlyList<Anime>> GetByFranchise(int franchiseId);
     }
     public class AnimeService(AppDbContext context) : IAnimeService
     {
@@ -135,6 +136,22 @@ namespace server.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IReadOnlyList<Anime>> GetByFranchise(int franchiseId)
+        {
+            return await _context.Animes
+                .Where(a => a.FranchiseId == franchiseId)
+                .Select(a => new Anime
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    ImageUrl = a.ImageUrl,
+                    MediaType = a.MediaType,
+                    Year = a.Year,
+                    Score = a.Score,
+                }).ToListAsync();
         }
     }
 }

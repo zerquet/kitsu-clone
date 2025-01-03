@@ -31,22 +31,9 @@ export class UserLibraryService {
         });
   }
 
-  updateLibraryEntry( //why not pass a dto or object? Inconsistency across codebase.
-    libraryEntryId: number, 
-    animeId: number, 
-    status: string, 
-    episodesWatched: number, 
-    rating: number
-  ): Observable<LibraryEntry> {
+  updateLibraryEntry(data: any): Observable<LibraryEntry> {
     return this.http
-      .put<LibraryEntry>(`${this.baseUrl}`, 
-        {
-          Id: libraryEntryId,
-          AnimeId: animeId,
-          WatchStatus: status,
-          EpisodesWatched: episodesWatched,
-          UserRating: rating
-        });
+      .put<LibraryEntry>(`${this.baseUrl}`, data);
   }
 
   deleteLibraryEntry(animeId: number): Observable<LibraryEntry> {
