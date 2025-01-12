@@ -18,16 +18,20 @@ namespace server.Services
 
         public static async Task PostAnimeImage(string fileName, IFormFile image)
         {
+            var directoryPath = @"C:\Users\icase\Code\VS 2022\kitsu-clone\client\src\assets\images";
+            var filePath = Path.Combine(directoryPath, fileName + ".jpg");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             using var memoryStream = new MemoryStream();
-            image.CopyTo(memoryStream);
+            await image.CopyToAsync(memoryStream);
             var imageData = memoryStream.ToArray();
 
-            var filePath = @"https://localhost:4200/assets/images/" + fileName + ".jpg";
-            using var client = new HttpClient();
-
-            var content = new ByteArrayContent(imageData);
-
-            await client.PostAsync(filePath, content);
+            await File.WriteAllBytesAsync(filePath, imageData);
         }
     }
 }

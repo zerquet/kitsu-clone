@@ -44,7 +44,7 @@ export class SignInComponent {
     this.authService.login(loginDto).subscribe({
       next: (res) => {
         localStorage.setItem("access_token", res.token);
-        this.authService.currentUserSig.set(res);
+        this.authService.currentUser$.next(res);
         this.toastService.show("Success", `Welcome back ${res.username}!`);
         this.activeModal.close();
       },

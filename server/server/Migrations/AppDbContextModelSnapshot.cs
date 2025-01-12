@@ -51,13 +51,13 @@ namespace server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a7895c7b-84f2-4d71-87d9-1fd0466cbfe5",
+                            Id = "a0d0483a-c8da-4676-84b3-543ffe4c7a90",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f01825bf-c061-4b58-ac68-5da685bcb6b5",
+                            Id = "22751d54-8e97-400f-a5cb-8cd97a9bacda",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -318,6 +318,24 @@ namespace server.Migrations
                     b.ToTable("Episode", (string)null);
                 });
 
+            modelBuilder.Entity("server.Models.FavoriteAnime", b =>
+                {
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("KitsuUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("AnimeId", "KitsuUserId");
+
+                    b.HasIndex("KitsuUserId");
+
+                    b.ToTable("FavoriteAnime");
+                });
+
             modelBuilder.Entity("server.Models.Franchise", b =>
                 {
                     b.Property<int>("Id")
@@ -342,6 +360,12 @@ namespace server.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly?>("Birthday")
+                        .HasColumnType("date");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -352,6 +376,12 @@ namespace server.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -522,6 +552,25 @@ namespace server.Migrations
                     b.Navigation("Anime");
                 });
 
+            modelBuilder.Entity("server.Models.FavoriteAnime", b =>
+                {
+                    b.HasOne("server.Models.Anime", "Anime")
+                        .WithMany("FavoriteAnimeEntries")
+                        .HasForeignKey("AnimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("server.Models.Identity.KitsuUser", "KitsuUser")
+                        .WithMany("FavoriteAnimeEntries")
+                        .HasForeignKey("KitsuUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
+
+                    b.Navigation("KitsuUser");
+                });
+
             modelBuilder.Entity("server.Models.LibraryEntry", b =>
                 {
                     b.HasOne("server.Models.Anime", "Anime")
@@ -548,6 +597,8 @@ namespace server.Migrations
                     b.Navigation("AnimeLibraryEntries");
 
                     b.Navigation("EpisodeList");
+
+                    b.Navigation("FavoriteAnimeEntries");
                 });
 
             modelBuilder.Entity("server.Models.Category", b =>
@@ -563,6 +614,8 @@ namespace server.Migrations
             modelBuilder.Entity("server.Models.Identity.KitsuUser", b =>
                 {
                     b.Navigation("AnimeLibraryEntries");
+
+                    b.Navigation("FavoriteAnimeEntries");
                 });
 #pragma warning restore 612, 618
         }

@@ -51,6 +51,11 @@ namespace server.Data
 
             modelBuilder.Entity<Episode>().ToTable("Episode");
             modelBuilder.Entity<Franchise>().ToTable("Franchise");
+
+            modelBuilder.Entity<KitsuUser>()
+                .HasMany(ku => ku.FavoriteAnimes)
+                .WithMany(a => a.FavoriteUsers)
+                .UsingEntity<FavoriteAnime>();
         }
 
         public DbSet<Anime> Animes => Set<Anime>(); 

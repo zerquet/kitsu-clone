@@ -7,9 +7,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar-content">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" routerLink="../library">Library</a>
-                </li>
+                @if(this.authService.currentUser$.value !== null) {
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" routerLink="/profile/{{this.authService.currentUser$.value.id}}">Library</a>
+                    </li>
+                }
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -27,16 +29,16 @@
                     <i class="bi bi-search"></i>
                     <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
                 </form>
-                @if(show === true ) {
+                @if(show$.value === true ) {
                     <app-search-results [results$]="searchResults$"></app-search-results>
                 }
             </div>
             <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">
-                @if (authService.currentUserSig() === null) {
+                @if ((authService.isLoggedIn | async) === false) {
                     <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
                     <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
                 }
-                @else if (authService.currentUserSig() !== undefined) {
+                @else if ((authService.isLoggedIn | async)) {
                     <li class="nav-item"><a class="nav-link cursor">Profile</a></li>
                     <li class="nav-item"><a class="nav-link cursor" (click)="logout()">Logout</a></li>
                 }

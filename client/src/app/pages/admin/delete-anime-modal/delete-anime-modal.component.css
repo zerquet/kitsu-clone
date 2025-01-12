@@ -1,0 +1,26 @@
+* {
+    text-align: center;
+}
+
+#delete-modal-title {
+    margin: 20px 0px;
+}
+
+#modal-actions {
+    margin-bottom: 10px;
+}
+
+#modal-actions input {
+    padding: 3px 5px;
+    border: none;
+    border-radius: 3px;
+}
+
+#delete-btn {
+    color: red;
+    margin-right: 10px;
+}
+
+#cancel-btn {
+    color: green;
+}

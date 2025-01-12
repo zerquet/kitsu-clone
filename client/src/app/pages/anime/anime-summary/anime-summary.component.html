@@ -3,7 +3,7 @@
         <div id="title-section">
             <strong>{{anime.title}}</strong>
             <span id="anime-quick-info-section" class="ps-2"><strong>{{anime.year}} | {{anime.mediaType}} | {{anime.episodeCount}} Episodes</strong></span>
-            <span id="admin-link" class="ps-2"><a routerLink="../../update-anime/{{anime.id}}">Update entry</a></span>
+            <span id="admin-link" class="ps-2"><a routerLink="../../admin/anime/edit/{{anime.id}}">Update entry</a></span>
         </div>
         <div><strong id="anime-score">{{anime.score}}% Overall Rating</strong></div>
         <div class="mt-2">{{anime.description}}</div>

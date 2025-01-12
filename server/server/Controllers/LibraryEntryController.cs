@@ -30,13 +30,10 @@ namespace server.Controllers
             _animeLibraryEntryService = animeLibraryEntryService;
         }
 
-        [Authorize]
-        [HttpGet("GetAllByUser")]
-        public async Task<IActionResult> GetAllByUser()
+        [HttpGet("GetAllByUser/{userId}")]
+        public async Task<IActionResult> GetAllByUser(string userId)
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var appUser = await _userManager.FindByEmailAsync(email);
-            var libraryEntries = await _animeLibraryEntryService.GetLibrary(appUser.Id);
+            var libraryEntries = await _animeLibraryEntryService.GetLibrary(userId);
             var libraryEntriesWithAnimeInfoDto = new List<LibraryEntryWithAnimeInfoDto>();
 
             foreach (var l in libraryEntries)
@@ -53,10 +50,11 @@ namespace server.Controllers
         public async Task<IActionResult> Get([FromRoute] int animeId)
         {
             var anime = await _animeService.Get(animeId);
-            if (anime == null) return NotFound("User not found.");
+            if (anime == null) return NotFound("Anime not found.");
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
-            var libraryEntry = await _animeLibraryEntryService.GetStatus(appUser.Id, animeId) ?? new LibraryEntry();
+            var libraryEntry = await _animeLibraryEntryService.GetStatus(appUser.Id, animeId);
+            if (libraryEntry == null) return Ok(null);
             return Ok(libraryEntry.ToLibraryEntryDto());
         }
 
@@ -100,6 +98,9 @@ namespace server.Controllers
             //get library record by id? or by where condition (user and anime ids) and confirm only 1 is returned?
             var libraryEntryMatch = await _animeLibraryEntryService.GetStatusById(request.Id);
             if (libraryEntryMatch == null) return NotFound();
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var appUser = await _userManager.FindByEmailAsync(email);
+            if (libraryEntryMatch.KitsuUserId != appUser.Id) return Unauthorized();
             request.ToLibraryEntryFromUpdate(libraryEntryMatch);
             await _animeLibraryEntryService.SaveChanges();
             return Ok(libraryEntryMatch.ToLibraryEntryDto());
@@ -114,7 +115,7 @@ namespace server.Controllers
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var appUser = await _userManager.FindByEmailAsync(email);
             await _animeLibraryEntryService.DeleteStatus(appUser.Id, animeId);
-            return Ok(new LibraryEntryDto());
+            return Ok();
         }
 
     }

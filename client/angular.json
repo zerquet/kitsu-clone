@@ -51,7 +51,7 @@
                 "glob": "**/*",
                 "input": "public,"
               },
-              "src/assets",
+              "src/assets/images",
               "src/api/data.json"
             ],
             "styles": [

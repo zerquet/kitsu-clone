@@ -36,5 +36,11 @@ namespace server.Controllers
             await _episodeService.AddEpisode(episode);
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _episodeService.GetAll());
+        }
     }
 }

@@ -7,11 +7,12 @@ import { AnimeService } from '../../shared/services/anime.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MAT_RIPPLE_GLOBAL_OPTIONS, MatRippleModule } from '@angular/material/core';
+import { AnimeTooltipComponent } from '../../shared/components/anime-tooltip/anime-tooltip.component';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, MatSliderModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, MatSliderModule, AnimeTooltipComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
   providers: [{provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: {disabled: true}}]
@@ -19,6 +20,8 @@ import { MAT_RIPPLE_GLOBAL_OPTIONS, MatRippleModule } from '@angular/material/co
 export class SearchComponent implements OnDestroy { //TODO add variables solely for displaying current filter values, separate from observables.
   private destroy$ = new Subject<void>();
   private animeService = inject(AnimeService);
+  activeAnimeId = 0;
+  showTooltipCallback: any;
   minRatingPillValue = "5";
   maxRatingPillValue = "100";
   minYearPillValue = "1975";
@@ -105,5 +108,18 @@ export class SearchComponent implements OnDestroy { //TODO add variables solely 
         this.maxEpisodes$.value, 
         this.tvChecked$.value, 
         this.movieChecked$.value);
+  }
+
+  onAnimePosterHover(id: number): void {
+    this.showTooltipCallback = setTimeout(() => {
+      this.activeAnimeId = id;
+    }, 300);
+  }
+
+  onAnimePosterHoverOut(): void {
+    if(this.showTooltipCallback) {
+      clearTimeout(this.showTooltipCallback);
+      this.activeAnimeId = 0;
+    }
   }
 }

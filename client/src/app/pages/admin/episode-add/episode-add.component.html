@@ -1,0 +1,93 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div id="form-heading">
+        <span class="cursor" (click)="goToParentPage()"><i class="bi bi-arrow-left-short"></i></span>
+        <span><strong>Add Episode</strong></span>
+    </div>
+
+    <input id="animeId" type="hidden" formControlName="animeId">
+    <div class="mt-2 d-flex">
+        <div>
+            <p-floatLabel variant="on"> <!--Try AutoComplete from PrimeNG-->
+                <input pInputText id="matchingAnime" type="text" formControlName="matchingAnime" pSize="small">
+                <label for="matchingAnime">Anime</label>
+            </p-floatLabel>
+            @if(this.show === true) {
+                <div *ngIf="animeResults$ | async; let animeResults" class="dropdown open">
+                    <div class="scroller">
+                        @for (anime of animeResults; track anime.id) {
+                            <div class="item">
+                                <span class="imgSquare" style="border-radius: 3px;">
+                                    <div>
+                                        <img class="resultsAnimeImg" [src]="anime.imageBase64">
+                                    </div>
+                                </span>
+                                <div class="resultInfoContainer">
+                                    <p (click)="selectAnimeForEpisodeAddition(anime)">{{anime.title}}</p>
+                                </div>
+                            </div>
+                        }
+                        @if(animeResults.length === 0) {
+                            <div class="item"><div class="resultInfoContainer">No results found.</div></div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (selectedAnime !== null) {
+        <div class="mt-2">
+            <div>Selected Anime</div>
+            <div>
+                <div id="selectedAnimePill">
+                    <span class="imgSquare" style="border-radius: 3px;">
+                        <div>
+                            <img class="resultsAnimeImg" [src]="selectedAnime.imageBase64">
+                        </div>
+                    </span>
+                    <div id="selectedAnimeTitleCont"><span>{{selectedAnime.title}}</span></div>
+                    <div id="deselectBtn"><i (click)="deselectAnime()" class="bi bi-x-circle"></i></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-2">
+        <p-floatlabel variant="on">
+            <p-inputnumber id="epNumber" formControlName="epNumber" mode="decimal" [useGrouping]="false" size="small"/>
+            <label for="epNumber">Episode Number</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="mt-2">
+        <p-floatLabel variant="on">
+            <input pInputText id="title" type="text" formControlName="title" pSize="small">
+            <label for="title">Title </label>
+        </p-floatLabel>
+    </div>
+
+    <div class="mt-2">
+        <p-floatLabel variant="on">
+            <textarea pTextarea id="description" formControlName="description" rows="6" pSize="small"></textarea>
+            <label for="description" class="align-top">Description </label>
+        </p-floatLabel>
+    </div>
+
+    <div class="mt-2">
+        <p-floatLabel variant="on">
+            <p-datepicker id="airDate" formControlName="airDate" showIcon iconDisplay="input" size="small"/>
+            <label for="airDate">Air Date</label>
+        </p-floatLabel>
+    </div>
+
+    <div class="mt-2">
+        <p-floatLabel variant="on">
+            <input pInputText id="japaneseTitle" type="text" formControlName="japaneseTitle" pSize="small">
+            <label for="japaneseTitle">Title (Japanese)</label>
+        </p-floatLabel>
+    </div>
+
+    <div id="add-btn-section" class="text-center mt-2">
+        <button id="add-btn" type="submit" [disabled]="!form.valid">Add Episode</button>
+    </div>
+</form>

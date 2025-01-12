@@ -41,7 +41,7 @@
 /*HOME GRID SECTION*/
 .anime-poster {
     position: relative;
-    width: 20%;
+    width: 16.66%;
 }
 
 .anime-poster-image-container {
@@ -68,15 +68,6 @@
     height: 100%;
     object-fit: contain;
     border-radius: 5px;
-}
-
-.anime-poster-title {
-    position: absolute;
-    bottom: 10px;
-    left: 5px;
-    right: 5px;
-    color: var(--background-white);
-    z-index: 1;
 }
 
 /*CATEGORIES SECTION*/

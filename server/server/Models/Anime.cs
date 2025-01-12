@@ -29,5 +29,7 @@ namespace server.Models
         public int? FranchiseId { get; set; }
         public Franchise? Franchise { get; set; }
         public ICollection<Episode> EpisodeList { get; set; } = [];
+        public List<KitsuUser> FavoriteUsers { get; } = [];
+        public List<FavoriteAnime> FavoriteAnimeEntries { get; } = [];
     }
 }

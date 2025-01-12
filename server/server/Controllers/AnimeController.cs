@@ -85,12 +85,12 @@ namespace server.Controllers
             if(request.Image != null)
             {
                 imageId = Guid.NewGuid().ToString();
-                await FileServerService.PostAnimeImage(imageId, request.Image); //delete previous photo?
+                FileServerService.PostAnimeImage(imageId, request.Image); //delete previous photo?
             }
             if(request.CoverImage != null)
             {
                 coverImageId= Guid.NewGuid().ToString();
-                await FileServerService.PostAnimeImage(coverImageId, request.CoverImage); //delete previous cover too?
+                FileServerService.PostAnimeImage(coverImageId, request.CoverImage); //delete previous cover too?
             }
             request.ToAnimeFromUpdate(animeMatch, imageId, coverImageId);
             await _animeService.UpdateAnime(animeMatch);
@@ -132,7 +132,10 @@ namespace server.Controllers
             {
                 Id = a.Id,
                 Title = a.Title,
-                ImageBase64 = "/assets/images/" + a.ImageUrl + ".jpg"
+                ImageBase64 = "/assets/images/" + a.ImageUrl + ".jpg",
+                Year = a.Year,
+                Score = a.Score,
+                Description = a.Description
             }).ToList();
 
             return animesDto;

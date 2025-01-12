@@ -88,6 +88,9 @@ namespace server.Services
                     Id= a.Id,
                     Title = a.Title,
                     ImageUrl= a.ImageUrl,
+                    Year = a.Year,
+                    Score = a.Score,
+                    Description = a.Description,
                 })
                 .ToListAsync();
         }

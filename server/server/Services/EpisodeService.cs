@@ -8,6 +8,7 @@ namespace server.Services
     {
         Task<IReadOnlyList<Episode>> GetEpisodesByAnime(int animeId);
         Task AddEpisode(Episode episode);
+        Task<IReadOnlyList<Episode>> GetAll();
     }
     public class EpisodeService : IEpisodeService
     {
@@ -24,6 +25,10 @@ namespace server.Services
         public async Task<IReadOnlyList<Episode>> GetEpisodesByAnime(int animeId)
         {
             return await _context.Episodes.Where(e => e.AnimeId == animeId).ToListAsync();
+        }
+        public async Task<IReadOnlyList<Episode>> GetAll()
+        {
+            return await _context.Episodes.ToListAsync();
         }
     }
 }

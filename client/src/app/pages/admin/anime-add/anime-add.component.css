@@ -1,0 +1,156 @@
+.required {
+    color: red;
+    font-size: 12px;
+    padding-left: 8px;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+form {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#form-heading span:first-of-type {
+    margin-right: 15px;
+}
+
+#form-heading i  {
+    font-size: 25px;
+    top: 2px;
+    position: relative;
+}
+
+#form-heading span {
+    font-size: 20px;
+}
+
+#form-layout {
+    display: flex;
+    margin-top: 30px;
+}
+
+#form-layout label {
+    font-weight: unset;
+    font-size: 14px;
+}
+
+#important-fields, #optional-fields {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#status, #mediaType, #rating {
+    width: 200px;
+}
+
+#image, #coverImage {
+    width: 400px;
+    outline-color: transparent;
+    outline-style: none;
+}
+
+#genres {
+    width: 400px;
+}
+
+.dropdown {
+    position: absolute;
+    width: 400px;
+    padding: 0px 0px;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+    z-index: 9999;
+    box-sizing: border-box;
+    transition: all .3s ease;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0px 6px 12px rgba(0,0,0,.1);
+    border-radius: 3px;
+}
+
+.scroller {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.item {
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.item:hover {
+    background-color: var(--hover-gray);
+}
+
+.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.resultInfoContainer {
+    padding-left: 10px;
+}
+
+#selectedAnimePill {
+    display: flex;
+    width: 300px;
+    background-color: var(--background-white);
+    border: 1px solid var(--border-lightgray);
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+#selectedAnimePill:hover {
+    background-color: var(--hover-gray2);
+    cursor: pointer;
+}
+
+#selectedAnimeTitleCont {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#deselectBtn {
+    margin-left: auto; /* Pushes the element to the right */
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#deselectBtn i {
+    font-size: 18px;
+    color: red;
+    transition: color 0.3s ease;
+}
+
+#deselectBtn i:hover {
+    color: darkred;
+}
+
+#add-btn-section {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#add-btn {
+    padding: 5px 13px;
+    background-color: var(--link-turquoise);
+    color: var(--background-white);
+    border-radius: 5px;
+    border: none;
+    margin-top: 10px;
+    margin-right: 15px;
+}
+
+#add-btn:disabled {
+    background-color: var(--disabled-turquoise);
+}

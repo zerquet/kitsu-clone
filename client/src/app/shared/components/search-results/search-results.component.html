@@ -5,7 +5,7 @@
         @for (result of results; track result.id) {
             <div class="search-result-item">
                 <div class="search-result-item-image-container"><img class="search-result-item-img" [src]="result.imageBase64"></div>
-                <div class="search-result-item-section"><a routerLink="/anime/{{result.id}}">{{result.title}}</a></div>
+                <div class="search-result-item-section"><a (click)="onResultClick(result.id)">{{result.title}}</a></div>
             </div>
         }
     </div>

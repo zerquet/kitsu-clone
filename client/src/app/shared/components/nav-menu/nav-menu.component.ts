@@ -10,6 +10,7 @@ import { Anime } from '../../models/anime';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth/services/auth.service';
 import { SearchResultsComponent } from '../search-results/search-results.component';
+import { NavMenuSearchDataService } from '../../services/nav-menu-search-data.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -23,8 +24,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   private modalService = inject(NgbModal);
   private animeService = inject(AnimeService);
   public authService = inject(AuthService);
-  show = false;
-  term$ = new BehaviorSubject<string>("");
+  private navMenuSearchDataService = inject(NavMenuSearchDataService);
+  show$ = this.navMenuSearchDataService.show$;
+  term$ = this.navMenuSearchDataService.term$;
   form = new FormGroup({ searchControl : new FormControl()});
 
   searchResults$: Observable<Anime[]> = combineLatest([this.term$]) 
@@ -40,9 +42,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         tap(term => {
           if(term && term.trim().length > 0)
-            this.show = true;
+            this.show$.next(true);
           else 
-            this.show = false;
+            this.show$.next(false);
         }),
         takeUntil(this.destroy$))
       .subscribe(term => this.term$.next(term));
@@ -72,6 +74,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
   logout() {
     localStorage.setItem("access_token", "");
-    this.authService.currentUserSig.set(null);
+    this.authService.currentUser$.next(null);
   }
 }

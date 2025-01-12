@@ -1,0 +1,72 @@
+#admin-search-section {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#add-btn-section {
+    width: 30%;
+}
+
+#add-btn-section button {
+    padding: 3px 13px;
+    background-color: var(--link-turquoise);
+    color: var(--background-white);
+    border-radius: 5px;
+    border: none;
+    margin-top: 5px;
+    margin-left: 1px;
+}
+
+#add-btn-section button:hover {
+    background-color: var(--hover-turquoise2);
+}
+
+#admin-search-section form {
+    width: 30%;
+}
+
+#admin-search-field {
+    display: block;
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 5px;
+    padding: 5px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    outline-style: none;
+    outline-color: transparent;
+}
+
+#table-container {
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+#admin-anime-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#admin-anime-table th, #admin-anime-table td {
+    border-bottom: 1px solid var(--border-lightgray2);
+    padding: 5px;
+}
+
+#admin-anime-table td {
+    background: var(--background-white);
+}
+
+.actions-cell {
+    text-align: center;
+}
+
+table#admin-anime-table tr:hover td {
+    background: var(--hover-gray2);
+}
+
+.cursor {
+    cursor: pointer;
+}

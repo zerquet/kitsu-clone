@@ -15,8 +15,13 @@ export class FranchiseService {
       .post<void>(this.baseUrl, request);
   }
 
-  getFranchises(keyword: string): Observable<Franchise[]> {
+  getFranchisesByKeyword(keyword: string): Observable<Franchise[]> {
     return this.http
       .get<Franchise[]>(`${this.baseUrl}/GetByKeyword?keyword=${keyword}`);
+  }
+
+  getFranchises(): Observable<Franchise[]> {
+    return this.http
+      .get<Franchise[]>(this.baseUrl);
   }
 }

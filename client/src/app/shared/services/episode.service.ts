@@ -19,4 +19,9 @@ export class EpisodeService {
     return this.http
       .get<Episode[]>(`${this.baseUrl}/${id}`);
   }
+
+  getEpisodes(): Observable<Episode[]> {
+    return this.http
+      .get<Episode[]>(this.baseUrl);
+  }
 }

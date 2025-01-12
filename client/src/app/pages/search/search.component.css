@@ -81,7 +81,8 @@ mat-slider {
 
 /*Copied from home.component.css*/
 .anime-poster {
-    width: 20%;
+    position: relative;
+    width: 16.66%;
 }
 
 .anime-poster-image-container {

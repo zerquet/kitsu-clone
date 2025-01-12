@@ -1,0 +1,84 @@
+<div id="main-container">
+    <div id="sidemenu">
+        <div id="sidemenu-greeting">
+            <h5 *ngIf="authService.currentUser$ | async; let user">Hello, {{user.username}}</h5>
+        </div>
+        <ul id="admin-nav">
+            <li [ngClass]="{'active-tab': this.currTab === 'anime'}"><a [routerLink]="['/admin']" routerLinkActive="active">Anime</a></li>
+            <li [ngClass]="{'active-tab': this.currTab === 'episode'}"><a [routerLink]="['/admin/episode']" routerLinkActive="active">Episodes</a></li>
+            <li [ngClass]="{'active-tab': this.currTab === 'franchise'}"><a [routerLink]="['/admin/franchise']" routerLinkActive="active">Franchises</a></li>
+        </ul>
+    </div>
+    <div id="admin-container" class="container">
+        <div id="admin-greeting">
+            <h3>Welcome Admin User!</h3>
+        </div>
+        <div id="admin-instructions">
+            Here, you can add/view/edit/delete new anime, episodes, and franchises to the database. Coming soon will be the ability to add/view/edit/delete characters and voice actors.
+        </div>
+        <div id="admin-content-container" class="container">
+            @if(this.currRoute === '/admin') {
+                <div>
+                    <div><h5>Manage Animes</h5></div>
+                    <div id="admin-search-section">
+                        <div id="add-btn-section"><button (click)="addAnime()"><i class="bi bi-plus-square"></i> Add</button></div>
+                        <form [formGroup]="form">
+                            <input id="admin-search-field" type="text" formControlName="searchControl" placeholder="Search for anime...">
+                        </form>
+                    </div>
+                    <div id="admin-anime-list">
+                        <div id="table-container">
+                            <table id="admin-anime-table">
+                                <thead>
+                                    <tr>
+                                        <th class="picture-cell">Picture</th>
+                                        <th>Anime</th>
+                                        <th class="year-cell">Year</th>
+                                        <th class="media-type-cell">Type</th>
+                                        <th class="episode-count-cell">Episodes</th>
+                                        <th class="actions-cell">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngIf="filteredSearchList$ | async; let searchList">
+                                        @for (anime of searchList; track anime.id) {
+                                            <tr>
+                                                <td class="picture-cell"><img [src]="anime.imageBase64" /></td>
+                                                <td>{{ anime.title }}</td>
+                                                <td class="year-cell">{{ anime.year }}</td>
+                                                <td class="media-type-cell">{{ anime.mediaType }}</td>
+                                                <td class="episode-count-cell">{{ anime.episodeCount }}</td>
+                                                <td class="actions-cell">
+                                                    <span (click)="editAnime(anime.id)" class="me-1 cursor"><i class="bi bi-pencil-fill"></i></span>
+                                                    <span (click)="deleteAnime(anime.id)" class="ms-1 cursor"><i class="bi bi-trash3"></i></span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            @else if(this.currRoute === '/admin/anime/add') { <!--anime should be plural. follow convention-->
+                <app-anime-add></app-anime-add>
+            }
+            @else if(this.currRoute.includes('/admin/anime/edit/')) {
+                <app-anime-edit></app-anime-edit>
+            }
+            @else if(this.currRoute === '/admin/episode') {
+                <app-episode-list></app-episode-list>
+            }
+            @else if(this.currRoute === '/admin/episode/add') {
+                <app-episode-add></app-episode-add>
+            }
+            @else if(this.currRoute === '/admin/franchise') {
+                <app-franchise-list></app-franchise-list>
+            }
+            @else if(this.currRoute === '/admin/franchise/add') {
+                <app-franchise-add></app-franchise-add>
+            }
+        </div>
+    </div>
+</div>

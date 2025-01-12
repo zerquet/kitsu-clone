@@ -19,7 +19,7 @@
                 <img [src]="anime.imageBase64" />
                 <div class="mt-2">
                     <!--Anime not in user's library-->
-                    @if(libraryEntry.watchStatus === null) {
+                    @if(this.libraryEntry$.value === null || this.authService.currentUser$.value === null) {
                         <span id="sidebar-heading"><span>Add to Library</span></span>
                         <div id="sidebar-container">
                             <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed" (click)="setAsCompleted(anime)"/></div>

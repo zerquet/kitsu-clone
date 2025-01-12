@@ -1,0 +1,165 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div id="form-heading">
+        <span class="cursor" (click)="goToParentPage()"><i class="bi bi-arrow-left-short"></i></span>
+        <span><strong>Edit Anime</strong></span>
+    </div>
+    <div id="form-layout">
+        <div id="important-fields">
+            <input type="hidden" formControlName="animeId">
+            <div>
+                <p-floatLabel variant="on">
+                    <input pInputText id="title" type="text" formControlName="title" pSize="small">
+                    <label for="title">Title </label>
+                </p-floatLabel>
+                <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required">
+                    <div *ngIf="title?.hasError('required')">
+                        Title is required.
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-inputnumber id="year" formControlName="year" mode="decimal" [useGrouping]="false" size="small"/>
+                    <label for="year">Air Year </label>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-inputnumber id="episodes" formControlName="episodes" mode="decimal" [useGrouping]="false" size="small"/>
+                    <label for="episodes">Total Episodes</label>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-select id="mediaType" formControlName="mediaType" [options]="mediaTypes" [showClear]="true" size="small"></p-select>
+                    <label for="mediaType">Media Type</label><br>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-float-label variant="on">
+                    <p-inputnumber id="score" formControlName="score" mode="decimal" [useGrouping]="false" [min]="0" [max]="100" size="small"/>
+                    <label for="score">Score</label>
+                </p-float-label>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <textarea pTextarea id="description" formControlName="description" rows="6" pSize="small"></textarea>
+                    <label for="description" class="align-top">Description </label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <label for="image" class="form-label">Image</label>
+                <input id="image" class="form-control form-control-sm" type="file" formControlName="image" (change)="onImagePicked($event)">
+                <div *ngIf="image?.invalid && (image?.dirty || image?.touched)" class="required">
+                    <div *ngIf="image?.hasError('required')">
+                        Image is required.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="optional-fields">
+            <div>
+                <ng-container *ngIf="availableCategories$ | async; let categories">
+                    <p-floatlabel variant="on">
+                        <p-multiselect id="genres" formControlName="categories" [options]="categories" optionLabel="name" optionValue="id" filter size="small"></p-multiselect>
+                        <label for="genres">Categories </label><br>
+                    </p-floatlabel>
+                </ng-container>
+            </div>
+            <div class="mt-2">
+                <label for="coverImage" class="form-label">Cover Image </label>
+                <input id="coverImage" class="form-control form-control-sm" type="file" formControlName="coverImage" (change)="onCoverImagePicked($event)">
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-select id="rating" formControlName="rating" [options]="maturityRatings" [showClear]="true" size="small"></p-select>
+                    <label for="rating">Maturity Rating</label>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-inputnumber id="episodeLength" formControlName="episodeLength" mode="decimal" [useGrouping]="false" [min]="1" suffix=" min." size="small"/>
+                    <label for="episodeLength">Episode Length</label>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <p-datepicker id="startAirDate" formControlName="startAirDate" showIcon iconDisplay="input" size="small"/>
+                    <label for="startAirDate">Start Air Date</label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <p-datepicker id="endAirDate" formControlName="endAirDate" showIcon iconDisplay="input" size="small"/>
+                    <label for="endAirDate">End Air Date</label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <p-floatlabel variant="on">
+                    <p-select id="releaseStatus" formControlName="releaseStatus" [options]="airingStatuses" [showClear]="true" size="small"></p-select>
+                    <label for="releaseStatus">Release Status</label><br>
+                </p-floatlabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <input pInputText id="season" type="text" formControlName="season" pSize="small">
+                    <label for="season">Season (Season Year)</label> <!--should be dropdown-->
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <input pInputText id="englishTitle" type="text" formControlName="englishTitle" pSize="small">
+                    <label for="englishTitle">Title (English)</label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <input pInputText id="japaneseTitle" type="text" formControlName="japaneseTitle" pSize="small">
+                    <label for="japaneseTitle">Title (Japanese)</label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-2">
+                <p-floatLabel variant="on">
+                    <input pInputText id="japaneseRomaji" type="text" formControlName="japaneseRomaji" pSize="small">
+                    <label for="japaneseRomaji">Title (Romaji)</label>
+                </p-floatLabel>
+            </div>
+            <div class="mt-4 d-flex">
+                <div>
+                    <p-floatLabel variant="on"> <!--Try AutoComplete from PrimeNG-->
+                        <input pInputText id="franchise" type="text" formControlName="franchiseSearch" pSize="small">
+                        <label for="franchise">Franchise</label>
+                    </p-floatLabel>
+                    @if(this.show === true) {
+                        <div *ngIf="franchiseList$ | async; let franchiseList" class="dropdown open">
+                            <div class="scroller">
+                                @for (item of franchiseList; track item.id) {
+                                    <div class="item">
+                                        <div class="resultInfoContainer"><span (click)="selectFranchise(item)">{{item.name}}</span></div>
+                                    </div>
+                                }
+                                @if(franchiseList.length === 0) {
+                                    <div class="item"><div class="resultInfoContainer">No results found.</div></div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        
+            @if (selectedFranchise !== null) {
+                <div class="mt-2">
+                    <span>Selected Franchise</span>
+                    <div id="selectedAnimePill">
+                        <div id="selectedAnimeTitleCont"><span>{{selectedFranchise.name}}</span></div>
+                        <div id="deselectBtn"><i (click)="deselectAnime()" class="bi bi-x-circle"></i></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div id="add-btn-section" class="text-center mt-2">
+        <button id="add-btn" type="submit" [disabled]="!form.valid">Save Changes</button>
+    </div>
+</form>

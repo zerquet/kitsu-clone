@@ -79,9 +79,15 @@
                         <!--foreach... (max 5)-->
                         @for (anime of results$ | async; track anime.id) {
                             <div class="anime-poster pe-2 pb-2">
-                                <div class="anime-poster-image-container" routerLink="/anime/{{anime.id}}"> <!--TODO add tooltips -->
+                                <div class="anime-poster-image-container" 
+                                    (mouseenter)="onAnimePosterHover(anime.id)" 
+                                    (mouseleave)="onAnimePosterHoverOut()"
+                                    routerLink="/anime/{{anime.id}}"> <!--TODO add tooltips -->
                                     <img class="anime-poster-img" [src]="anime.imageBase64" />
                                 </div>
+                                @if(activeAnimeId == anime.id) {
+                                    <app-anime-tooltip [anime]="anime"></app-anime-tooltip>
+                                }
                                 <div>
                                     {{anime.title}}
                                 </div>

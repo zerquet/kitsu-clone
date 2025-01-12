@@ -7,6 +7,7 @@
         public string? Title { get; set; }
         public string? Description { get; set; }
         public DateOnly? AirDate { get; set; }
+        public DateTime? AirDate2 { get; set; }
         public string? JapaneseTitle { get; set; }
     }
 }

@@ -1,0 +1,142 @@
+#main-container {
+    display: flex;
+}
+
+#sidemenu {
+    display: block;
+    width: 300px;
+    height: 100vh;
+    background-color: var(--background-burgundy);
+}
+
+#sidemenu-greeting {
+    padding: 20px 20px 0px 20px;
+    color: #fff;
+}
+
+.active-tab {
+    background-color: var(--background-burgundy3) !important;
+}
+
+#sidemenu ul {
+    list-style-type: none;
+    padding: 20px;
+}
+
+#sidemenu ul li {
+    padding: 10px 0px;
+    margin-bottom: 5px;
+    background-color: var(--background-burgundy2);
+    border-radius: 5px;
+}
+
+#sidemenu ul li:hover {
+    background-color: var(--background-burgundy3);
+    cursor: pointer;
+}
+
+#sidemenu ul li a {
+    text-decoration: none;
+    color: var(--text-burgundy);
+    padding-left: 8px;
+    font-size: 14px;
+}
+
+#admin-container {
+    padding-top: 20px;
+    margin-left: 100px;
+}
+
+#admin-greeting, #admin-instructions {
+    text-align: center;
+}
+
+#admin-content-container {
+    margin-top: 20px;
+    background-color: var(--background-white);
+    border-radius: 5px;
+    border: 1px solid var(--border-lightgray2);
+    padding: 20px;
+}
+
+#admin-search-section {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#add-btn-section {
+    width: 30%;
+}
+
+#add-btn-section button {
+    padding: 3px 13px;
+    background-color: var(--link-turquoise);
+    color: var(--background-white);
+    border-radius: 5px;
+    border: none;
+    margin-top: 5px;
+    margin-left: 1px;
+}
+
+#add-btn-section button:hover {
+    background-color: var(--hover-turquoise2);
+}
+
+#admin-search-section form {
+    width: 30%;
+}
+
+#admin-search-field {
+    display: block;
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 5px;
+    padding: 5px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    outline-style: none;
+    outline-color: transparent;
+}
+
+#table-container {
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+#admin-anime-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#admin-anime-table th, #admin-anime-table td {
+    border-bottom: 1px solid var(--border-lightgray2);
+    padding: 5px;
+}
+
+#admin-anime-table td {
+    background: var(--background-white);
+}
+
+.picture-cell {
+    width: 70px;
+}
+
+.picture-cell img {
+    width: 50px;
+    border-radius: 3px;
+}
+
+.picture-cell, .year-cell, .episode-count-cell, .media-type-cell, .actions-cell {
+    text-align: center;
+}
+
+table#admin-anime-table tr:hover td {
+    background: var(--hover-gray2);
+}
+
+.cursor {
+    cursor: pointer;
+}

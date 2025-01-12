@@ -1,0 +1,34 @@
+<div>
+    <div><h5>Manage Franchises</h5></div>
+    <div id="admin-search-section">
+        <div id="add-btn-section"><button (click)="addFranchise()"><i class="bi bi-plus-square"></i> Add</button></div>
+        <form [formGroup]="form">
+            <input id="admin-search-field" type="text" formControlName="searchControl" placeholder="Search for franchises...">
+        </form>
+    </div>
+    <div id="admin-anime-list">
+        <div id="table-container">
+            <table id="admin-anime-table">
+                <thead>
+                    <tr>
+                        <th>Franchise</th>
+                        <th class="actions-cell">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="filteredSearchList$ | async; let searchList">
+                        @for (franchise of searchList; track franchise.id) {
+                            <tr>
+                                <td>{{ franchise.name }}</td>
+                                <td class="actions-cell">
+                                    <span (click)="editFranchise(franchise.id!)" class="me-1 cursor"><i class="bi bi-pencil-fill"></i></span>
+                                    <span (click)="deleteFranchise(franchise.id!)" class="ms-1 cursor"><i class="bi bi-trash3"></i></span>
+                                </td>
+                            </tr>
+                        }
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

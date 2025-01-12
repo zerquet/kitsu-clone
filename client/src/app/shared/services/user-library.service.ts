@@ -11,14 +11,14 @@ export class UserLibraryService {
   private http = inject(HttpClient);
   private readonly baseUrl = "https://localhost:7009/api/LibraryEntry";
   
-  getLibraryEntry(animeId: number): Observable<LibraryEntry> {
+  getLibraryEntry(animeId: number): Observable<LibraryEntry | null> {
     return this.http
       .get<LibraryEntry>(`${this.baseUrl}/${animeId}`);
   }
 
-  getLibrary(): Observable<LibraryEntryWithAnimeInfo[]> {
+  getLibrary(userId: number): Observable<LibraryEntryWithAnimeInfo[]> {
     return this.http
-      .get<LibraryEntryWithAnimeInfo[]>(`${this.baseUrl}/GetAllByUser`);
+      .get<LibraryEntryWithAnimeInfo[]>(`${this.baseUrl}/GetAllByUser/${userId}`);
   }
 
   createLibraryEntry(animeId: number, status: string, episodesWatched: number): Observable<LibraryEntry> {

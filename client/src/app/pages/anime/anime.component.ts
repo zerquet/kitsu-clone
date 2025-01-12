@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AnimeService } from '../../shared/services/anime.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged, map, mergeMap, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, mergeMap, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { Anime } from '../../shared/models/anime';
 import { AsyncPipe, CommonModule, NgClass, NgIf } from '@angular/common';
 import { UserLibraryService } from '../../shared/services/user-library.service';
@@ -10,6 +10,9 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AnimeSummaryComponent } from './anime-summary/anime-summary.component';
 import { AnimeEpisodesComponent } from './anime-episodes/anime-episodes.component';
 import { AnimeFranchiseComponent } from './anime-franchise/anime-franchise.component';
+import { AuthService } from '../../auth/services/auth.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SignUpComponent } from '../../auth/components/sign-up/sign-up.component';
 
 @Component({
   selector: 'app-anime',
@@ -18,49 +21,111 @@ import { AnimeFranchiseComponent } from './anime-franchise/anime-franchise.compo
   templateUrl: './anime.component.html',
   styleUrl: './anime.component.css'
 })
-export class AnimeComponent implements OnInit {
+export class AnimeComponent implements OnInit, OnDestroy {
   private animeService = inject(AnimeService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private userLibraryService = inject(UserLibraryService);
-  libraryEntry!: LibraryEntry;
+  private destroy$ = new Subject<void>();
+  public authService = inject(AuthService);
+  private modalService = inject(NgbModal);
+  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
   anime$: Observable<Anime> = this.route.params
     .pipe(
       distinctUntilChanged(),
-      mergeMap(params => this.animeService.getAnime(params['id'])));
+      mergeMap(params => this.animeService.getAnime(params['id'])),
+      takeUntil(this.destroy$));
   currentTab$: Observable<string> = this.route.params
     .pipe(
       distinctUntilChanged(),
-      map(params => params['tab'] || "summary"));
+      map(params => params['tab'] || "summary"),
+      takeUntil(this.destroy$));
   form = new FormGroup({
     episodeProgress: new FormControl(),
     rating: new FormControl(),
     status: new FormControl(),
   });
 
-  ngOnInit() {    
-    this.route.params
+  ngOnInit() {
+    combineLatest
+
+    this.authService.currentUser$
       .pipe(
-        distinctUntilChanged(),
-        mergeMap(params => this.userLibraryService.getLibraryEntry(params['id'])),)
-      .subscribe(res => this.populateFormFields(res));    
+        switchMap(isLoggedIn => {
+          if(isLoggedIn !== null) {
+            return this.route.params.pipe(distinctUntilChanged());
+          }
+          return of(null);
+        }),
+        switchMap(params => {
+          if(params !== null) {
+            return this.userLibraryService.getLibraryEntry(params['id'])
+          }
+          return of(null);
+        }),
+        takeUntil(this.destroy$))
+      .subscribe(res => this.populateFormFields(res))   
   }
 
-  private populateFormFields(res: LibraryEntry) {
-    this.libraryEntry = res; //make into observable or behavior subject?
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private populateFormFields(res: LibraryEntry | null) {
+    console.log(res);
+    
+    if(res === null) {
+      this.libraryEntry$.next(null);
+      return;
+    }
+    this.libraryEntry$.next(res);
     this.form.patchValue({"episodeProgress": res.episodesWatched});
     this.form.patchValue({"status": res.watchStatus});
     this.form.patchValue({"rating": res.userRating});
   }
 
   //Use Case: Watched all episodes, status = "completed"
-  setAsCompleted = (anime: Anime) => this.userLibraryService.createLibraryEntry(anime.id, "completed", anime.episodeCount!).subscribe(res => this.populateFormFields(res));
+  setAsCompleted = (anime: Anime) => {
+    if(this.authService.currentUser$.value === null) {
+      const signUpModalRef = this.modalService.open(SignUpComponent)
+      signUpModalRef.componentInstance.name = "Sign In";
+    }
+    else {
+      this.userLibraryService
+        .createLibraryEntry(anime.id, "completed", anime.episodeCount!)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(res => this.populateFormFields(res));
+    }
+  } 
 
   //Use Case: 0 episodes
-  setAsPlanning = (anime: Anime) => this.userLibraryService.createLibraryEntry(anime.id, "planning", 0).subscribe(res => this.populateFormFields(res));
+  setAsPlanning = (anime: Anime) => {
+    if(this.authService.currentUser$.value === null) {
+      const signUpModalRef = this.modalService.open(SignUpComponent) //move to service?
+      signUpModalRef.componentInstance.name = "Sign In";
+    }
+    else {
+      this.userLibraryService
+        .createLibraryEntry(anime.id, "planning", 0)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(res => this.populateFormFields(res));
+    }  
+  } 
 
   //Use Case: 0 episodes. Don't assume user immediately watched the first episode.
-  setAsWatching = (anime: Anime) => this.userLibraryService.createLibraryEntry(anime.id, "watching", 0).subscribe(res => this.populateFormFields(res));
+  setAsWatching = (anime: Anime) => {
+    if(this.authService.currentUser$.value === null) {
+      const signUpModalRef = this.modalService.open(SignUpComponent)
+      signUpModalRef.componentInstance.name = "Sign In";
+    }
+    else {
+      this.userLibraryService
+       .createLibraryEntry(anime.id, "watching", 0)
+       .pipe(takeUntil(this.destroy$))
+       .subscribe(res => this.populateFormFields(res));
+    }
+  } 
 
   onIncrementProgressClick(anime: Anime) {
     var currentProgress = this.episodeProgress?.value;
@@ -70,18 +135,18 @@ export class AnimeComponent implements OnInit {
   }
 
   saveLibraryEntryUpdates(anime: Anime) {
-    const data = {
-      libraryEntryId: this.libraryEntry.id,
+    const data = { //prolly need a dto for this
+      id: this.libraryEntry$.value!.id,
       animeId: anime.id,
-      episodeProgress: this.episodeProgress?.value,
-      rating: this.rating?.value,
-      status: this.status?.value
+      episodesWatched: this.episodeProgress?.value,
+      userRating: this.rating?.value,
+      watchStatus: this.status?.value
     }
 
-    this.userLibraryService.updateLibraryEntry(data).subscribe(res => this.libraryEntry = res);
+    this.userLibraryService.updateLibraryEntry(data).pipe(takeUntil(this.destroy$)).subscribe(res => this.libraryEntry$.next(res));
   }
 
-  deleteEntry = (anime: Anime) => this.userLibraryService.deleteLibraryEntry(anime.id).subscribe(res => this.populateFormFields(res));
+  deleteEntry = (anime: Anime) => this.userLibraryService.deleteLibraryEntry(anime.id).pipe(takeUntil(this.destroy$)).subscribe(() => this.libraryEntry$.next(null));
 
   updateTab = (tab: string, animeId: number) => this.router.navigate([`/anime/${animeId}/${tab}`]);
 

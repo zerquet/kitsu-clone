@@ -30,7 +30,15 @@ namespace server.Controllers
         public async Task<IActionResult> Get([FromQuery] string keyword)
         {
             if (string.IsNullOrEmpty(keyword)) return Ok(new List<GetFranchiseDto>());
-            var franchises = await _franchiseService.GetFranchises(keyword);
+            var franchises = await _franchiseService.GetFranchisesByKeyword(keyword);
+            var franchisesDto = franchises.Select(f => f.ToFranchiseDto());
+            return Ok(franchisesDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var franchises = await _franchiseService.GetAll();
             var franchisesDto = franchises.Select(f => f.ToFranchiseDto());
             return Ok(franchisesDto);
         }

@@ -86,11 +86,21 @@ namespace server.Controllers
                 var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
                 if (!result.Succeeded) return Unauthorized("Invalid password!"); //dont be too specific bc its a vuln
 
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var isAdmin = false;
+                foreach(var role in userRoles) {
+                    if(role.Equals("admin", StringComparison.InvariantCultureIgnoreCase)) {
+                        isAdmin = true;
+                        break;
+                    }
+                }
                 return Ok(new NewUserDto
                 {
+                    Id = user.Id,
                     Email = user.Email,
                     Username = user.UserName,
-                    Token = _tokenService.CreateToken(user)
+                    Token = _tokenService.CreateToken(user),
+                    IsAdmin = isAdmin
                 });
             }
             catch (Exception e)
@@ -100,14 +110,62 @@ namespace server.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("User")]
         public async Task<IActionResult> GetUser()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if(string.IsNullOrEmpty(email)) 
+                return Ok(null);
             var appUser = await _userManager.FindByEmailAsync(email);
+            var userRoles = await _userManager.GetRolesAsync(appUser);
+            var isAdmin = false;
+            foreach(var role in userRoles) {
+                if(role.Equals("admin", StringComparison.InvariantCultureIgnoreCase)) {
+                    isAdmin = true;
+                    break;
+                }
+            }
             var token = ((string)Request.Headers.Authorization)[7..]; //Skips 'Bearer ' part of value
-            return Ok(new NewUserDto { Email = email, Username = appUser.UserName, Token = token });
+            return Ok(new NewUserDto { Id = appUser.Id, Email = email, Username = appUser.UserName, Token = token, IsAdmin = isAdmin });
+        }
+
+        [HttpGet("GetUserProfileById/{id}")]
+        public async Task<IActionResult> GetUserProfileById([FromRoute] string id)
+        {
+            var appUser = await _userManager.FindByIdAsync(id);
+            if(appUser == null) return NotFound();
+            return Ok(new UserProfileDto {
+                Id = appUser.Id,
+                Username = appUser.UserName,
+                Bio = appUser.Bio,
+                Location = appUser.Location,
+                Birthday = appUser.Birthday,
+                Gender = appUser.Gender 
+            });
+        }
+
+        [Authorize]
+        [HttpPut("UpdateUserProfile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UserProfileDto dto)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+                return Ok(null);
+            var appUser = await _userManager.FindByEmailAsync(email);
+            if (appUser == null) return NotFound();
+            appUser.Bio = dto.Bio;
+            appUser.Location = dto.Location;
+            appUser.Birthday = dto.Birthday;
+            appUser.Gender = dto.Gender;
+            await _userManager.UpdateAsync(appUser);
+            return Ok(new UserProfileDto
+            {
+                Id = appUser.Id,
+                Username = appUser.UserName,
+                Bio = appUser.Bio,
+                Location = appUser.Location,
+                Birthday = appUser.Birthday,
+            });
         }
     }
 }
