@@ -1,0 +1,32 @@
+<div id="favorites-section">
+    <h4>Favorites</h4>
+    <form [formGroup]="form">
+        <div id="search-section">
+            <input type="text" formControlName="favoriteSearch">
+            <div></div>
+        </div>
+        <div>
+            @if (newList$ | async; as favoriteAnimes) {
+                @for (favorite of favoriteAnimes; track favorite.id) {
+                    <div class="favorite-record-container">
+                        <div class="favorite-info-section">
+                            <div class="favorite-photo-section">
+                                <a href="javascript:void(0);" routerLink="/anime/{{favorite.id}}">
+                                    <img [src]="favorite.imageBase64" alt="">
+                                </a>
+                            </div>
+                            <div class="favorite-title-section"><span>{{favorite.title}}</span></div>
+                        </div>
+                        <div class="favorite-remove-section">
+                            <a href="javascript:void(0);" placement="start" ngbTooltip="Remove Favorite?" 
+                                (click)="removeFavorite(favorite)">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
+    </form>
+</div>

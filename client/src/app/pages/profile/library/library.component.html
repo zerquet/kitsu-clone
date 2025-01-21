@@ -50,7 +50,7 @@
                                     <div><img [src]="anime.imageBase64" alt=""></div>
                                 </span>
                                 <span class="title-cell-span"
-                                    routerLink="../anime/{{anime.animeId}}">{{anime.title}}</span>
+                                    routerLink="/anime/{{anime.animeId}}">{{anime.title}}</span>
                             </td>
                             <td class="rating-cell">
                                 @if(canEdit$.value === true) {

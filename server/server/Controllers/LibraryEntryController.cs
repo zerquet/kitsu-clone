@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using server.Dtos.Anime;
 using server.Dtos.LibraryEntry;
 using server.Mappers;
 using server.Models;
@@ -118,5 +119,86 @@ namespace server.Controllers
             return Ok();
         }
 
+        [Authorize]
+        [HttpPost("favorites/{animeId}")]
+        public async Task<IActionResult> AddAnimeToFavorites([FromRoute] int animeId) {
+            var anime = await _animeService.Get(animeId);
+            if (anime == null) return NotFound();
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var appUser = await _userManager.FindByEmailAsync(email);
+            var favoritedAnime = new FavoriteAnime {
+                KitsuUserId = appUser.Id,
+                AnimeId = anime.Id,
+                DateAdded = DateTime.UtcNow
+            };
+
+            try
+            {
+                await this._animeLibraryEntryService.AddToFavorites(favoritedAnime);
+                return Created();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("favorites")]
+        public async Task<IActionResult> GetFavoriteAnimes() {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            var favoriteAnimes = await _animeLibraryEntryService.GetFavoriteAnimes(user.Id);
+            var dtos = favoriteAnimes.Select(a => new AnimeDto {
+                Id = a.Id,
+                Title = a.Title,
+                ImageBase64 = $"/assets/images/{a.ImageUrl}.jpg"
+            }).ToList();
+
+            return Ok(dtos);
+        }
+
+        [HttpGet("favorites/{animeId}")]
+        public async Task<IActionResult> GetFavoriteAnime([FromRoute] int animeId) {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            var anime = await _animeService.Get(animeId);
+            var favoriteAnime = await _animeLibraryEntryService.GetFavoriteAnime(user.Id, animeId);
+            return Ok(favoriteAnime);
+        }
+
+        [HttpDelete("favorites/{animeId}")]
+        public async Task<IActionResult> DeleteFavoriteAnime([FromRoute] int animeId) {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _animeLibraryEntryService.DeleteFavoriteAnime(user.Id, animeId);
+            return Ok();
+        }
+
+        [HttpPut("favorites/bulk")]
+        public async Task<IActionResult> UpdateFavorites([FromBody] List<int> animeIds)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            var favoriteAnimes = await _animeLibraryEntryService.GetFavoriteAnimes(user.Id);
+            var favoriteAnimeIds = favoriteAnimes.Select(a => a.Id).ToList();
+            var toAdd = animeIds.Except(favoriteAnimeIds).ToList(); //get ids in animeIds except that ones you already favorited, so new ones.
+            var toRemove = favoriteAnimeIds.Except(animeIds).ToList(); //get animes that didn't match meaning you dont want them
+            foreach (var id in toAdd)
+            {
+                var anime = await _animeService.Get(id);
+                var favoriteAnime = new FavoriteAnime
+                {
+                    KitsuUserId = user.Id,
+                    AnimeId = anime.Id,
+                    DateAdded = DateTime.UtcNow
+                };
+                await _animeLibraryEntryService.AddToFavorites(favoriteAnime);
+            }
+            foreach (var id in toRemove)
+            {
+                await _animeLibraryEntryService.DeleteFavoriteAnime(user.Id, id);
+            }
+            return Ok();
+        }
     }
 }

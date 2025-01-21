@@ -13,6 +13,7 @@ import { AnimeFranchiseComponent } from './anime-franchise/anime-franchise.compo
 import { AuthService } from '../../auth/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SignUpComponent } from '../../auth/components/sign-up/sign-up.component';
+import { FavoriteAnime } from '../../shared/models/favoriteAnime';
 
 @Component({
   selector: 'app-anime',
@@ -45,10 +46,9 @@ export class AnimeComponent implements OnInit, OnDestroy {
     rating: new FormControl(),
     status: new FormControl(),
   });
+  favoriteAnime$ = new BehaviorSubject<boolean | null>(null);
 
   ngOnInit() {
-    combineLatest
-
     this.authService.currentUser$
       .pipe(
         switchMap(isLoggedIn => {
@@ -64,7 +64,26 @@ export class AnimeComponent implements OnInit, OnDestroy {
           return of(null);
         }),
         takeUntil(this.destroy$))
-      .subscribe(res => this.populateFormFields(res))   
+      .subscribe(res => this.populateFormFields(res));
+
+    this.authService.currentUser$
+      .pipe(
+        switchMap(isLoggedIn => {
+          if(isLoggedIn !== null) {
+            return this.route.params.pipe(distinctUntilChanged());
+          }
+          return of(null);
+        }),
+        switchMap(params => {
+          if(params !== null) {
+            return this.userLibraryService.getFavoriteAnime(params['id'])
+          }
+          return of(null);
+        }),
+        takeUntil(this.destroy$))
+      .subscribe((favoriteAnime) => {
+        this.favoriteAnime$.next(favoriteAnime !== null);
+      });
   }
 
   ngOnDestroy() {
@@ -149,6 +168,22 @@ export class AnimeComponent implements OnInit, OnDestroy {
   deleteEntry = (anime: Anime) => this.userLibraryService.deleteLibraryEntry(anime.id).pipe(takeUntil(this.destroy$)).subscribe(() => this.libraryEntry$.next(null));
 
   updateTab = (tab: string, animeId: number) => this.router.navigate([`/anime/${animeId}/${tab}`]);
+
+  addToFavorites(anime: Anime) {
+    if(this.authService.currentUser$.value === null) {
+      const signUpModalRef = this.modalService.open(SignUpComponent)
+      signUpModalRef.componentInstance.name = "Sign In";
+    }
+    else {
+      this.userLibraryService.addToFavorites(anime);
+      this.favoriteAnime$.next(true);
+    }
+  }
+
+  removeFromFavorites(anime: Anime) {
+    this.userLibraryService.removeAnimeFromFavorites(anime);
+    this.favoriteAnime$.next(false);
+  }
 
   /**FORM GETTERS */
   get episodeProgress() { return this.form.get("episodeProgress"); }

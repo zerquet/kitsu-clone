@@ -8,6 +8,7 @@ import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../../auth/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-modal.component';
+import { UserLibraryService } from '../../shared/services/user-library.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,6 +23,10 @@ export class ProfileComponent {
   private modalService = inject(NgbModal)
   public authService = inject(AuthService);
   private destroy$ = new Subject<void>();
+  private userLibraryService = inject(UserLibraryService);
+
+  favoriteAnimes$ = this.userLibraryService.getFavoriteAnimes();
+
   userProfile$: Observable<UserProfile> = this.route.params.pipe(
     switchMap(params => this.userProfileService.getUserProfileById(params['id'])),
     takeUntil(this.destroy$));

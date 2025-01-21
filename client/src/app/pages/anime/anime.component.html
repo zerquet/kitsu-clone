@@ -16,8 +16,18 @@
         </div>
         <div class="container d-flex">
             <div id="sidebar-section">
-                <img [src]="anime.imageBase64" />
-                <div class="mt-2">
+                <div>
+                    <div id="favorite-section">
+                        @if(favoriteAnime$.value !== false) {
+                            <i class="bi bi-heart-fill" style="color: palevioletred;" (click)="removeFromFavorites(anime)"></i>
+                        }
+                        @else {
+                            <i (click)="addToFavorites(anime)" class="bi bi-heart"></i>
+                        }
+                    </div>
+                    <img [src]="anime.imageBase64" />
+                </div>
+                <div id="sidebar-form" class="mt-2">
                     <!--Anime not in user's library-->
                     @if(this.libraryEntry$.value === null || this.authService.currentUser$.value === null) {
                         <span id="sidebar-heading"><span>Add to Library</span></span>

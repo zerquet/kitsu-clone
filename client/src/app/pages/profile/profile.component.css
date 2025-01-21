@@ -45,9 +45,9 @@
 }
 
 #edit-btn {
-    background: rgba(255,255,255,.11);
-    border: 1px solid rgba(255,255,255,.2);
-    color:rgba(255,255,255,.6);
+    background: rgba(255, 255, 255, .11);
+    border: 1px solid rgba(255, 255, 255, .2);
+    color: rgba(255, 255, 255, .6);
     border-radius: 3px;
     padding: 6px 40px;
     font-size: 13px;
@@ -61,7 +61,7 @@
 
 #follow-btn {
     background: var(--link-turquoise);
-    color:#fff;
+    color: #fff;
     border-radius: 3px;
     padding: 6px 40px;
     font-size: 13px;
@@ -137,4 +137,37 @@
 
 #about-me-bio {
     margin-top: 10px;
+}
+
+/*FAVORITES SECTION*/
+.favorite-poster {
+    position: relative;
+    width: 25%;
+    padding: 3px;
+}
+
+.favorite-poster img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    /* left: 50%; */
+    margin-left: -60px;
+}
+
+.favorite-poster:hover .tooltiptext {
+    visibility: visible;
 }

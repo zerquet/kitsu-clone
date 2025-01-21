@@ -3,14 +3,17 @@
     <div id="anime-tabs-container" class="container">
         <div id="anime-tabs">
             <ul>
-                <li>About Me</li>
-                <li>Favorites</li>
+                <li (click)="currentTab = 'about'">About Me</li>
+                <li (click)="currentTab = 'favorites'">Favorites</li>
             </ul>
         </div>
     </div>
     <div>
+        @if(currentTab === 'about') {
         <form [formGroup]="form" (ngSubmit)="null">
-            <div><h4>About Me</h4></div>
+            <div>
+                <h4>About Me</h4>
+            </div>
             <div class="mb-2">
                 <label for="location">Location</label>
                 <input formControlName="location" type="text" id="location">
@@ -30,7 +33,11 @@
                 <label for="bio">Bio</label>
                 <textarea formControlName="bio" id="bio"></textarea>
             </div>
+            <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
         </form>
+        }
+        @else if(currentTab === 'favorites') {
+            <app-favorites-tab></app-favorites-tab>
+        }
     </div>
-    <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
 </div>

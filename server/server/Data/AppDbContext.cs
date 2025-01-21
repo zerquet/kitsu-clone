@@ -55,7 +55,8 @@ namespace server.Data
             modelBuilder.Entity<KitsuUser>()
                 .HasMany(ku => ku.FavoriteAnimes)
                 .WithMany(a => a.FavoriteUsers)
-                .UsingEntity<FavoriteAnime>();
+                .UsingEntity<FavoriteAnime>()
+                .ToTable("FavoriteAnime");
         }
 
         public DbSet<Anime> Animes => Set<Anime>(); 
@@ -64,5 +65,6 @@ namespace server.Data
         public DbSet<AnimeCategory> AnimeCategories => Set<AnimeCategory>();
         public DbSet<Franchise> Franchises => Set<Franchise>();
         public DbSet<Episode> Episodes => Set<Episode>();
+        public DbSet<FavoriteAnime> FavoriteAnimes => Set<FavoriteAnime>();
     }
 }

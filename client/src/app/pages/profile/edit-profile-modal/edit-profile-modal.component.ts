@@ -6,11 +6,12 @@ import { BehaviorSubject } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { UserProfileService } from '../../../shared/services/user-profile.service';
 import { AppToastService } from '../../../shared/services/app-toast.service';
+import { FavoritesTabComponent } from '../favorites-tab/favorites-tab.component';
 
 @Component({
   selector: 'app-edit-profile-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, FavoritesTabComponent],
   templateUrl: './edit-profile-modal.component.html',
   styleUrl: './edit-profile-modal.component.css'
 })
@@ -25,6 +26,7 @@ export class EditProfileModalComponent {
     gender: new FormControl(''),
     bio: new FormControl('')
   });
+  currentTab = "about";
 
   initializeModalData(profileInfo: UserProfile) {
     this.profileInfo$.next(profileInfo);
